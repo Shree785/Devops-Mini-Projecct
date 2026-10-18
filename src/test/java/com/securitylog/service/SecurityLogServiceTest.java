@@ -1,5 +1,6 @@
 package com.securitylog.service;
 
+import com.securitylog.model.DashboardMetricsDto;
 import com.securitylog.model.LogStatus;
 import com.securitylog.model.SecurityLog;
 import com.securitylog.model.Severity;
@@ -81,6 +82,53 @@ class SecurityLogServiceTest {
 
         assertThat(results).hasSize(1);
         assertThat(results.get(0).getEventType()).isEqualTo("SQL_INJECTION");
+    }
+
+    @Test
+    void testStatusWorkflow_ValidTransitions() {
+        // Step 1: Create in NEW
+        SecurityLog log = logService.createLog(new SecurityLog("RANSOMWARE", "10.0.0.5", "10.0.0.1", 
+                Severity.CRITICAL, "Suspicious encrypt activity"));
+        assertThat(log.getStatus()).isEqualTo(LogStatus.NEW);
+
+        // Step 2: Transition NEW -> IN_REVIEW
+        SecurityLog inReview = logService.transitionStatus(log.getId(), LogStatus.IN_REVIEW, "Analyst Dave", "Starting memory dump analysis");
+        assertThat(inReview.getStatus()).isEqualTo(LogStatus.IN_REVIEW);
+        assertThat(inReview.getReviewerName()).isEqualTo("Analyst Dave");
+
+        // Step 3: Transition IN_REVIEW -> ESCALATED
+        SecurityLog escalated = logService.transitionStatus(log.getId(), LogStatus.ESCALATED, "Lead Alice", "Escalating to Incident Command");
+        assertThat(escalated.getStatus()).isEqualTo(LogStatus.ESCALATED);
+
+        // Step 4: Transition ESCALATED -> RESOLVED
+        SecurityLog resolved = logService.transitionStatus(log.getId(), LogStatus.RESOLVED, "Lead Alice", "Host isolated and re-imaged");
+        assertThat(resolved.getStatus()).isEqualTo(LogStatus.RESOLVED);
+    }
+
+    @Test
+    void testStatusWorkflow_IllegalTransition_ThrowsException() {
+        SecurityLog log = logService.createLog(new SecurityLog("ANOMALY", "10.0.0.5", "10.0.0.1", 
+                Severity.LOW, "Minor traffic deviation"));
+
+        // Direct transition from NEW to RESOLVED without IN_REVIEW is prohibited
+        assertThrows(IllegalStateException.class, () -> 
+                logService.transitionStatus(log.getId(), LogStatus.RESOLVED, "Auditor", "Skipping review")
+        );
+    }
+
+    @Test
+    void testDashboardMetrics_Calculation() {
+        logService.createLog(new SecurityLog("EVENT_1", "1.1.1.1", null, Severity.CRITICAL, "Crit event"));
+        logService.createLog(new SecurityLog("EVENT_2", "1.1.1.2", null, Severity.HIGH, "High event"));
+        logService.createLog(new SecurityLog("EVENT_3", "1.1.1.3", null, Severity.LOW, "Low event"));
+
+        DashboardMetricsDto metrics = logService.getDashboardMetrics();
+
+        assertThat(metrics.getTotalLogs()).isEqualTo(3);
+        assertThat(metrics.getCriticalCount()).isEqualTo(1);
+        assertThat(metrics.getHighCount()).isEqualTo(1);
+        assertThat(metrics.getLowCount()).isEqualTo(1);
+        assertThat(metrics.getNewCount()).isEqualTo(3);
     }
 
     @Test

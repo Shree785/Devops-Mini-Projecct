@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Log Details - Security Log Review System</title>
+    <title>Log Details & Triage - Security Log Review System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 </head>
@@ -12,14 +12,28 @@
 <div th:replace="~{fragments/navbar :: navbar('logs')}"></div>
 
 <div class="container py-4">
+    <!-- Breadcrumb -->
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/dashboard}">Dashboard</a></li>
             <li class="breadcrumb-item"><a th:href="@{/logs}">Logs</a></li>
             <li class="breadcrumb-item active" th:text="'Log #' + ${log.id}">Log #1</li>
         </ol>
     </nav>
 
-    <!-- Detail Card -->
+    <!-- Alerts -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" id="alertSuccess" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <span th:text="${successMessage}">Status updated!</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" id="alertError" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <span th:text="${errorMessage}">Illegal transition error</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Main Detail Card -->
     <div class="card shadow-sm border-0 mb-4" id="logDetailCard">
         <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
@@ -66,24 +80,74 @@
                 </div>
 
                 <div class="col-md-6">
-                    <h6 class="text-muted text-uppercase fw-bold small">Assigned Reviewer</h6>
+                    <h6 class="text-muted text-uppercase fw-bold small">Current Assigned Reviewer</h6>
                     <p class="mb-0 fw-semibold" id="detailReviewer" th:text="${log.reviewerName != null ? log.reviewerName : 'Unassigned'}">Unassigned</p>
                 </div>
                 <div class="col-md-6">
-                    <h6 class="text-muted text-uppercase fw-bold small">Timestamps</h6>
+                    <h6 class="text-muted text-uppercase fw-bold small">Audit Timestamps</h6>
                     <p class="mb-0 small text-muted">
                         Ingested: <span id="detailCreatedAt" th:text="${#temporals.format(log.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2026-10-18</span><br>
-                        Last Updated: <span id="detailUpdatedAt" th:text="${#temporals.format(log.updatedAt, 'yyyy-MM-dd HH:mm:ss')}">2026-10-18</span>
+                        Last Transition: <span id="detailUpdatedAt" th:text="${#temporals.format(log.updatedAt, 'yyyy-MM-dd HH:mm:ss')}">2026-10-18</span>
                     </p>
                 </div>
 
                 <div class="col-12" th:if="${log.reviewerNotes}">
-                    <h6 class="text-muted text-uppercase fw-bold small">Triage & Investigation Notes</h6>
-                    <div class="p-3 bg-light border rounded" id="detailNotes" th:text="${log.reviewerNotes}">
-                        Notes content
-                    </div>
+                    <h6 class="text-muted text-uppercase fw-bold small">Historical Triage & Investigation Audit Trail</h6>
+                    <pre class="p-3 bg-light border rounded small" id="detailNotes" th:text="${log.reviewerNotes}">Notes content</pre>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Role-Based Workflow State Transition Card -->
+    <div class="card shadow-sm border-0 border-start border-4 border-primary" id="workflowCard">
+        <div class="card-header bg-white py-3">
+            <h5 class="card-title mb-0 fw-bold fs-6">
+                <i class="bi bi-signpost-split-fill text-primary me-2"></i>Role-Based Triage & Incident Workflow Transition
+            </h5>
+        </div>
+        <div class="card-body p-4">
+            <div th:if="${log.status.name() == 'RESOLVED'}" class="alert alert-success mb-0" id="resolvedNotice">
+                <i class="bi bi-shield-check me-2 fs-5"></i>
+                <strong>Incident Closed & Audited:</strong> This security event has been verified and marked as RESOLVED.
+            </div>
+
+            <form th:if="${log.status.name() != 'RESOLVED'}" 
+                  th:action="@{/logs/{id}/status(id=${log.id})}" method="post" id="statusTransitionForm">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="targetStatusSelect" class="form-label fw-semibold">Advance Status To <span class="text-danger">*</span></label>
+                        <select class="form-select" id="targetStatusSelect" name="targetStatus" required>
+                            <option value="" disabled selected>-- Select Next Action --</option>
+                            <!-- If NEW -->
+                            <option th:if="${log.status.name() == 'NEW'}" value="IN_REVIEW">IN_REVIEW (Start Investigation)</option>
+                            <!-- If IN_REVIEW -->
+                            <option th:if="${log.status.name() == 'IN_REVIEW'}" value="ESCALATED">ESCALATED (Tier 2 Incident Response)</option>
+                            <option th:if="${log.status.name() == 'IN_REVIEW'}" value="RESOLVED">RESOLVED (Mitigated / False Positive)</option>
+                            <!-- If ESCALATED -->
+                            <option th:if="${log.status.name() == 'ESCALATED'}" value="RESOLVED">RESOLVED (Threat Neutralized)</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="workflowReviewerName" class="form-label fw-semibold">Reviewer Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="workflowReviewerName" name="reviewerName" 
+                               th:value="${log.reviewerName}" placeholder="e.g. Alex Mercer" required>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label for="workflowNotes" class="form-label fw-semibold">Triage Findings & Action Notes <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="workflowNotes" name="reviewerNotes" rows="2" 
+                                  placeholder="Describe investigative findings, mitigation steps, or false-positive rationale..." required></textarea>
+                    </div>
+
+                    <div class="col-12 mt-3">
+                        <button type="submit" class="btn btn-primary" id="btnSubmitTransition">
+                            <i class="bi bi-arrow-right-circle-fill me-1"></i>Apply State Transition
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>

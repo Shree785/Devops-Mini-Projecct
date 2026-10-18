@@ -28,6 +28,15 @@ class LogWebControllerTest {
     private SecurityLogService logService;
 
     @Test
+    void testDashboard_ReturnsOkAndContainsCards() throws Exception {
+        mockMvc.perform(get("/dashboard"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("dashboard"))
+                .andExpect(model().attributeExists("metrics"))
+                .andExpect(content().string(containsString("Security Operations Center (SOC) Posture")));
+    }
+
+    @Test
     void testListLogs_ReturnsOkAndContainsTable() throws Exception {
         logService.createLog(new SecurityLog("DDoS_ALERT", "203.0.113.10", "10.0.0.1", Severity.CRITICAL, "High SYN packet volume"));
 
@@ -70,5 +79,19 @@ class LogWebControllerTest {
                 .andExpect(view().name("log-detail"))
                 .andExpect(model().attributeExists("log"))
                 .andExpect(content().string(containsString("EXFIL_ATTEMPT")));
+    }
+
+    @Test
+    void testStatusTransition_Success() throws Exception {
+        SecurityLog log = logService.createLog(new SecurityLog("INTRUSION", "10.0.0.30", "10.0.0.1", 
+                Severity.HIGH, "Unauthorized root attempt"));
+
+        mockMvc.perform(post("/logs/" + log.getId() + "/status")
+                        .param("targetStatus", "IN_REVIEW")
+                        .param("reviewerName", "Analyst Jane")
+                        .param("reviewerNotes", "Commencing memory forensics"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/logs/" + log.getId()))
+                .andExpect(flash().attributeExists("successMessage"));
     }
 }
