@@ -1,0 +1,17 @@
+.git
+.github
+.gitignore
+deliverables/
+Task-*/
+tools/
+.m2/
+*.log
+*.dumpstream
+target/classes
+target/test-classes
+target/generated-sources
+target/surefire-reports
+target/screenshots
+.idea/
+.vscode/
+*.iml
