@@ -1,0 +1,19 @@
+---
+# Handlers for role: security_log_app
+
+- name: Restart security-log-review container
+  ansible.builtin.command:
+    cmd: "docker restart {{ docker_container }}"
+  register: restart_result
+  changed_when: restart_result.rc == 0
+
+- name: Reload systemd daemon
+  ansible.builtin.systemd:
+    daemon_reload: true
+  when: ansible_service_mgr == 'systemd'
+
+- name: Restart systemd service
+  ansible.builtin.systemd:
+    name: "{{ app_name }}"
+    state: restarted
+  when: ansible_service_mgr == 'systemd'
