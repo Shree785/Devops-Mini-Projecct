@@ -4,14 +4,17 @@ pipeline {
     parameters {
         choice(name: 'APP_ENV', choices: ['production', 'staging', 'development'], description: 'Target Deployment Environment')
         string(name: 'DEPLOY_PORT', defaultValue: '8080', description: 'HTTP Server Port for Deployed Application')
+        choice(name: 'DEPLOY_TARGET', choices: ['docker', 'standalone-jar'], description: 'Deployment Platform Target')
         booleanParam(name: 'RUN_UNIT_TESTS', defaultValue: true, description: 'Execute unit and integration tests')
         booleanParam(name: 'RUN_SELENIUM_TESTS', defaultValue: true, description: 'Execute headless Chrome Selenium acceptance tests')
     }
 
     environment {
-        APP_NAME     = 'security-log-review'
-        VERSION      = '1.0.0'
-        ARTIFACT_JAR = "target/${APP_NAME}-${VERSION}.jar"
+        APP_NAME        = 'security-log-review'
+        VERSION         = '1.0.0'
+        ARTIFACT_JAR    = "target/${APP_NAME}-${VERSION}.jar"
+        DOCKER_IMAGE    = "${APP_NAME}:${VERSION}"
+        DOCKER_CONTAINER = 'security-log-review-app'
     }
 
     options {
@@ -122,10 +125,55 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+        stage('Docker Build & Tag') {
+            when {
+                expression { return params.DEPLOY_TARGET == 'docker' }
+            }
             steps {
                 echo "=========================================================="
-                echo " [STAGE: DEPLOY] Deploying to ${params.APP_ENV} on Port ${params.DEPLOY_PORT}"
+                echo " [STAGE: DOCKER BUILD] Building & Tagging OCI Container Image"
+                echo " Image: ${env.DOCKER_IMAGE} and ${APP_NAME}:latest"
+                echo "=========================================================="
+                script {
+                    if (isUnix()) {
+                        sh "docker build -t ${env.DOCKER_IMAGE} -t ${env.APP_NAME}:latest ."
+                        sh "docker images ${env.APP_NAME}"
+                    } else {
+                        bat "docker build -t ${env.DOCKER_IMAGE} -t ${env.APP_NAME}:latest ."
+                        bat "docker images ${env.APP_NAME}"
+                    }
+                }
+            }
+        }
+
+        stage('Continuous Deployment (Docker Container)') {
+            when {
+                expression { return params.DEPLOY_TARGET == 'docker' }
+            }
+            steps {
+                echo "=========================================================="
+                echo " [STAGE: DOCKER CD] Automated Zero-Downtime Container Deployment"
+                echo " Target Environment : ${params.APP_ENV}"
+                echo " Host Port Mapping  : ${params.DEPLOY_PORT} -> 8080"
+                echo " Container Name     : ${env.DOCKER_CONTAINER}"
+                echo "=========================================================="
+                script {
+                    if (isUnix()) {
+                        sh "bash scripts/deploy-docker.sh ${env.APP_NAME} ${env.VERSION} ${env.DOCKER_CONTAINER} ${params.DEPLOY_PORT} ${params.APP_ENV}"
+                    } else {
+                        powershell "scripts/deploy-docker.ps1 -ImageName '${env.APP_NAME}' -Tag '${env.VERSION}' -ContainerName '${env.DOCKER_CONTAINER}' -HostPort ${params.DEPLOY_PORT} -AppEnv '${params.APP_ENV}'"
+                    }
+                }
+            }
+        }
+
+        stage('Continuous Deployment (Standalone JAR)') {
+            when {
+                expression { return params.DEPLOY_TARGET == 'standalone-jar' }
+            }
+            steps {
+                echo "=========================================================="
+                echo " [STAGE: STANDALONE DEPLOY] Deploying Embedded JAR"
                 echo "=========================================================="
                 script {
                     if (isUnix()) {
@@ -141,14 +189,17 @@ pipeline {
     post {
         success {
             echo "=========================================================="
-            echo " [QUALITY GATE PASSED] All Continuous Tests Verified Green!"
-            echo " [DEPLOYMENT STATUS] Application LIVE in ${params.APP_ENV} on port ${params.DEPLOY_PORT}"
-            echo " [DASHBOARD] http://localhost:${params.DEPLOY_PORT}/dashboard"
+            echo " [CD PIPELINE SUCCESS] Application Deployed & Verified Green!"
+            echo " Deployment Platform : ${params.DEPLOY_TARGET}"
+            echo " Target Environment  : ${params.APP_ENV}"
+            echo " Access Dashboard    : http://localhost:${params.DEPLOY_PORT}/dashboard"
+            echo " Security Logs Stream: http://localhost:${params.DEPLOY_PORT}/logs"
+            echo " Actuator Health     : http://localhost:${params.DEPLOY_PORT}/actuator/health"
             echo "=========================================================="
         }
         failure {
             echo "=========================================================="
-            echo " [PIPELINE TERMINATED] Build or Quality Gate Failed."
+            echo " [CD PIPELINE FAILURE] Build, Quality Gate, or Deployment Failed."
             echo "=========================================================="
         }
     }
