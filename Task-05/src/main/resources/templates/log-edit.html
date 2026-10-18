@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Security Log - Security Log Review System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div th:replace="~{fragments/navbar :: navbar('logs')}"></div>
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/logs}">Logs</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/logs/{id}(id=${securityLog.id})}" th:text="'Log #' + ${securityLog.id}">Log</a></li>
+                    <li class="breadcrumb-item active">Edit</li>
+                </ol>
+            </nav>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3">
+                    <h4 class="card-title mb-0 fw-bold" id="editHeader">
+                        <i class="bi bi-pencil-square text-primary me-2"></i>Edit Security Log #<span th:text="${securityLog.id}">1</span>
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <form th:action="@{/logs/{id}/edit(id=${securityLog.id})}" th:object="${securityLog}" method="post" id="editLogForm">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="eventTypeInput" class="form-label fw-semibold">Event Type</label>
+                                <input type="text" class="form-control" id="eventTypeInput" th:field="*{eventType}" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="severitySelect" class="form-label fw-semibold">Severity Rating</label>
+                                <select class="form-select" id="severitySelect" th:field="*{severity}" required>
+                                    <option th:each="sev : ${allSeverities}" th:value="${sev}" th:text="${sev}"></option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="sourceIpInput" class="form-label fw-semibold">Source IP</label>
+                                <input type="text" class="form-control" id="sourceIpInput" th:field="*{sourceIp}" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="destinationIpInput" class="form-label fw-semibold">Destination IP</label>
+                                <input type="text" class="form-control" id="destinationIpInput" th:field="*{destinationIp}">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="reviewerNameInput" class="form-label fw-semibold">Reviewer Name</label>
+                                <input type="text" class="form-control" id="reviewerNameInput" th:field="*{reviewerName}" 
+                                       placeholder="Assigned SOC Analyst...">
+                            </div>
+
+                            <div class="col-12">
+                                <label for="messageInput" class="form-label fw-semibold">Log Payload / Message</label>
+                                <textarea class="form-control" id="messageInput" th:field="*{message}" rows="3" required></textarea>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="reviewerNotesInput" class="form-label fw-semibold">Reviewer Notes</label>
+                                <textarea class="form-control" id="reviewerNotesInput" th:field="*{reviewerNotes}" rows="3" 
+                                          placeholder="Notes regarding investigation, threat analysis, or findings..."></textarea>
+                            </div>
+
+                            <div class="col-12 mt-4 d-flex justify-content-between">
+                                <a th:href="@{/logs/{id}(id=${securityLog.id})}" class="btn btn-outline-secondary" id="cancelEditBtn">
+                                    <i class="bi bi-x-circle me-1"></i>Cancel
+                                </a>
+                                <button type="submit" class="btn btn-primary px-4" id="saveChangesBtn">
+                                    <i class="bi bi-check-lg me-1"></i>Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

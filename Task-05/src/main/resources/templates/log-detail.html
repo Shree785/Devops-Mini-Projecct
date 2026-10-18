@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Details - Security Log Review System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div th:replace="~{fragments/navbar :: navbar('logs')}"></div>
+
+<div class="container py-4">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/logs}">Logs</a></li>
+            <li class="breadcrumb-item active" th:text="'Log #' + ${log.id}">Log #1</li>
+        </ol>
+    </nav>
+
+    <!-- Detail Card -->
+    <div class="card shadow-sm border-0 mb-4" id="logDetailCard">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <span class="h4 mb-0 fw-bold me-3" id="logIdHeader" th:text="'Security Log #' + ${log.id}">Log #1</span>
+                <span th:if="${log.severity.name() == 'CRITICAL'}" class="badge bg-danger fs-6" id="severityBadge" th:text="${log.severity}">CRITICAL</span>
+                <span th:if="${log.severity.name() == 'HIGH'}" class="badge bg-warning text-dark fs-6" id="severityBadge" th:text="${log.severity}">HIGH</span>
+                <span th:if="${log.severity.name() == 'MEDIUM'}" class="badge bg-info text-dark fs-6" id="severityBadge" th:text="${log.severity}">MEDIUM</span>
+                <span th:if="${log.severity.name() == 'LOW'}" class="badge bg-secondary fs-6" id="severityBadge" th:text="${log.severity}">LOW</span>
+
+                <span class="ms-2 badge fs-6" 
+                      th:classappend="${log.status.name() == 'NEW' ? 'bg-primary' : (log.status.name() == 'IN_REVIEW' ? 'bg-warning text-dark' : (log.status.name() == 'ESCALATED' ? 'bg-danger' : 'bg-success'))}"
+                      id="logStatusBadge" th:text="${log.status}">NEW</span>
+            </div>
+            <div>
+                <a th:href="@{/logs/{id}/edit(id=${log.id})}" class="btn btn-outline-secondary btn-sm me-2" id="btnEditLog">
+                    <i class="bi bi-pencil me-1"></i>Edit
+                </a>
+                <a th:href="@{/logs}" class="btn btn-outline-primary btn-sm" id="btnBackToLogs">
+                    <i class="bi bi-arrow-left me-1"></i>Back to Stream
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body p-4">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <h6 class="text-muted text-uppercase fw-bold small">Event Classification</h6>
+                    <p class="fs-5 fw-semibold mb-0" id="detailEventType" th:text="${log.eventType}">PORT_SCAN</p>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="text-muted text-uppercase fw-bold small">Source IP</h6>
+                    <code class="fs-5" id="detailSourceIp" th:text="${log.sourceIp}">192.168.1.100</code>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="text-muted text-uppercase fw-bold small">Destination IP</h6>
+                    <code class="fs-5" id="detailDestIp" th:text="${log.destinationIp != null ? log.destinationIp : 'N/A'}">10.0.0.1</code>
+                </div>
+
+                <div class="col-12">
+                    <h6 class="text-muted text-uppercase fw-bold small">Event Message / Raw Payload</h6>
+                    <div class="p-3 bg-dark text-light rounded font-monospace small" id="detailMessage" th:text="${log.message}">
+                        Raw payload data
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <h6 class="text-muted text-uppercase fw-bold small">Assigned Reviewer</h6>
+                    <p class="mb-0 fw-semibold" id="detailReviewer" th:text="${log.reviewerName != null ? log.reviewerName : 'Unassigned'}">Unassigned</p>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="text-muted text-uppercase fw-bold small">Timestamps</h6>
+                    <p class="mb-0 small text-muted">
+                        Ingested: <span id="detailCreatedAt" th:text="${#temporals.format(log.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2026-10-18</span><br>
+                        Last Updated: <span id="detailUpdatedAt" th:text="${#temporals.format(log.updatedAt, 'yyyy-MM-dd HH:mm:ss')}">2026-10-18</span>
+                    </p>
+                </div>
+
+                <div class="col-12" th:if="${log.reviewerNotes}">
+                    <h6 class="text-muted text-uppercase fw-bold small">Triage & Investigation Notes</h6>
+                    <div class="p-3 bg-light border rounded" id="detailNotes" th:text="${log.reviewerNotes}">
+                        Notes content
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
