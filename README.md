@@ -10,9 +10,11 @@
 ---
 
 ## 1. Overview
-The **Ansible-Provisioned Security Log Review System** is an enterprise-grade, lightweight web platform designed for Security Operations Center (SOC) teams, System Administrators, and Compliance Auditors. It centralizes security event review, enforces an auditable status workflow (`NEW` ➔ `IN_REVIEW` ➔ `ESCALATED` / `RESOLVED`), and offers automated CI/CD and idempotent server deployment via Ansible.
+
+> **Branch Release Status:** Feature Branch (feature/workflow-and-dashboard) — Role-Based Triage Engine and Executive Metrics Dashboard active.
 
 ---
+
 
 ## 2. Tech Stack & Architecture
 - **Backend:** Java 17 LTS, Spring Boot 3.2.5 (Spring MVC, Spring Data JPA, Hibernate, Actuator)
