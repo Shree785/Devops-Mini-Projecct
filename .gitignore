@@ -1,0 +1,38 @@
+# Compiled class file
+target/
+*.class
+
+# Maven local repo cache
+.m2/
+
+# Log files
+*.log
+logs/
+
+# Portable tools cache
+tools/
+
+# Database files
+*.db
+*.h2.db
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Virtual environment / IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# OS files
+.DS_Store
+Thumbs.db
