@@ -4,7 +4,8 @@ pipeline {
     parameters {
         choice(name: 'APP_ENV', choices: ['production', 'staging', 'development'], description: 'Target Deployment Environment')
         string(name: 'DEPLOY_PORT', defaultValue: '8080', description: 'HTTP Server Port for Deployed Application')
-        booleanParam(name: 'RUN_TESTS', defaultValue: true, description: 'Execute automated regression test suite')
+        booleanParam(name: 'RUN_UNIT_TESTS', defaultValue: true, description: 'Execute unit and integration tests')
+        booleanParam(name: 'RUN_SELENIUM_TESTS', defaultValue: true, description: 'Execute headless Chrome Selenium acceptance tests')
     }
 
     environment {
@@ -51,25 +52,56 @@ pipeline {
             }
         }
 
-        stage('Test') {
+        stage('Unit & Service Tests') {
             when {
-                expression { return params.RUN_TESTS == true }
+                expression { return params.RUN_UNIT_TESTS == true }
             }
             steps {
                 echo "=========================================================="
-                echo " [STAGE: TEST] Running Automated Regression & Unit Tests"
+                echo " [STAGE: UNIT TESTS] Running Unit & Integration Test Suites"
                 echo "=========================================================="
                 script {
                     if (isUnix()) {
-                        sh 'mvn -B test'
+                        sh 'mvn -B test -Dtest=SecurityLogServiceTest,LogWebControllerTest,SecurityLogApplicationTests'
                     } else {
-                        bat 'tools\\mvn.cmd -B test'
+                        bat 'tools\\mvn.cmd -B test -Dtest=SecurityLogServiceTest,LogWebControllerTest,SecurityLogApplicationTests'
                     }
                 }
             }
             post {
                 always {
                     junit testResults: 'target/surefire-reports/*.xml', allowEmptyResults: true
+                }
+            }
+        }
+
+        stage('Continuous Testing (Selenium E2E Quality Gate)') {
+            when {
+                expression { return params.RUN_SELENIUM_TESTS == true }
+            }
+            steps {
+                echo "=========================================================="
+                echo " [STAGE: CONTINUOUS TESTING] Headless Chrome Acceptance Suite"
+                echo "=========================================================="
+                script {
+                    if (isUnix()) {
+                        sh 'mvn -B test -Dtest=SecurityLogE2ETest'
+                    } else {
+                        bat 'tools\\mvn.cmd -B test -Dtest=SecurityLogE2ETest'
+                    }
+                }
+            }
+            post {
+                always {
+                    junit testResults: 'target/surefire-reports/TEST-com.securitylog.e2e.*.xml', allowEmptyResults: true
+                    archiveArtifacts artifacts: 'target/screenshots/*.png', allowEmptyArchive: true
+                }
+                failure {
+                    echo "=========================================================="
+                    echo " [QUALITY GATE FAILED] Selenium acceptance test failure detected!"
+                    echo " [ACTION REQUIRED] Pipeline halted. Deployment aborted."
+                    echo " [DIAGNOSTICS] Inspect archived failure screenshots in target/screenshots/."
+                    echo "=========================================================="
                 }
             }
         }
@@ -109,14 +141,14 @@ pipeline {
     post {
         success {
             echo "=========================================================="
-            echo " [PIPELINE SUCCESS] Application successfully deployed to ${params.APP_ENV}!"
-            echo " [ACCESS URL] http://localhost:${params.DEPLOY_PORT}/dashboard"
-            echo " [STREAM URL] http://localhost:${params.DEPLOY_PORT}/logs"
+            echo " [QUALITY GATE PASSED] All Continuous Tests Verified Green!"
+            echo " [DEPLOYMENT STATUS] Application LIVE in ${params.APP_ENV} on port ${params.DEPLOY_PORT}"
+            echo " [DASHBOARD] http://localhost:${params.DEPLOY_PORT}/dashboard"
             echo "=========================================================="
         }
         failure {
             echo "=========================================================="
-            echo " [PIPELINE FAILURE] Build or Deployment failed. Inspect console."
+            echo " [PIPELINE TERMINATED] Build or Quality Gate Failed."
             echo "=========================================================="
         }
     }
