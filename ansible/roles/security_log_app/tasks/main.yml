@@ -2,6 +2,7 @@
 # ==============================================================================
 # Tasks for role: security_log_app
 # Enterprise Automated Provisioning & Continuous Configuration
+# Supports 100% Idempotent Execution (changed=0 on subsequent runs)
 # ==============================================================================
 
 - name: "[1/9] Display Provisioning Target & Environment Context"
@@ -44,19 +45,13 @@
   changed_when: false
   failed_when: image_inspect.rc != 0
 
-- name: "[6/9] Drain & Terminate Existing Container Instance (Zero-Downtime Clean Up)"
-  ansible.builtin.shell: |
-    if docker ps -a --format '{% raw %}{{.Names}}{% endraw %}' | grep -Eq '^{{ docker_container }}$'; then
-      docker stop -t 15 {{ docker_container }} || true
-      docker rm {{ docker_container }} || true
-      echo "REMOVED"
-    else
-      echo "NOT_PRESENT"
-    fi
-  register: cleanup_result
-  changed_when: "'REMOVED' in cleanup_result.stdout"
+- name: "[6/9] Check if Application Container is Already Running with Target Image"
+  ansible.builtin.command:
+    cmd: "docker ps --filter 'name=^{{ docker_container }}$' --filter 'ancestor={{ docker_image }}' --format '{% raw %}{{.Names}}{% endraw %}'"
+  register: running_container_check
+  changed_when: false
 
-- name: "[7/9] Launch Provisioned Application Container"
+- name: "[7/9] Launch Application Container (Only When Not Already Running)"
   ansible.builtin.command:
     cmd: >
       docker run -d
@@ -69,7 +64,7 @@
       --restart unless-stopped
       {{ docker_image }}
   register: container_launch
-  changed_when: container_launch.rc == 0
+  when: running_container_check.stdout != docker_container
 
 - name: "[8/9] Await Spring Boot Actuator Health Probe (Quality Gate)"
   ansible.builtin.uri:
@@ -96,7 +91,6 @@
       - "=========================================================="
       - " [ANSIBLE PROVISIONING SUCCESS] System Fully Operational!"
       - " Application Container : {{ docker_container }}"
-      - " Instance ID           : {{ container_launch.stdout[:12] }}"
       - " Health Endpoint        : {{ healthcheck_endpoint }} (UP)"
       - " SOC Dashboard          : {{ dashboard_endpoint }} (HTTP 200)"
       - " Configuration File     : {{ app_config_dir }}/application-production.properties"

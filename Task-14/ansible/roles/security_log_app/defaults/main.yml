@@ -1,0 +1,31 @@
+---
+# Defaults for role: security_log_app
+app_name: "security-log-review"
+app_version: "1.0.0"
+app_user: "appuser"
+app_group: "appgroup"
+app_uid: 1001
+app_gid: 1001
+
+# Persistent Host-Mounted Directory Paths
+app_install_dir: "/workspace/ansible/runtime/opt/security-log-review"
+app_config_dir: "/workspace/ansible/runtime/etc/security-log-review"
+app_log_dir: "/workspace/ansible/runtime/var/log/security-log-review"
+
+# Runtime & Ports
+deploy_port: 8080
+app_env: "production"
+jvm_max_ram: 75.0
+jvm_opts: "-XX:+UseContainerSupport -XX:MaxRAMPercentage={{ jvm_max_ram }} -XX:+ExitOnOutOfMemoryError"
+
+# Container Specs
+docker_image: "security-log-review:1.0.0"
+docker_container: "security-log-review-app"
+docker_cpu_limit: "1.5"
+docker_memory_limit: "1024m"
+
+# Healthcheck
+healthcheck_retries: 20
+healthcheck_delay: 3
+healthcheck_endpoint: "http://localhost:{{ deploy_port }}/actuator/health"
+dashboard_endpoint: "http://localhost:{{ deploy_port }}/dashboard"

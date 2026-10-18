@@ -12,6 +12,9 @@ logs/
 # Portable tools cache
 tools/
 
+# Ansible local runtime data
+ansible/runtime/
+
 # Database files
 *.db
 *.h2.db

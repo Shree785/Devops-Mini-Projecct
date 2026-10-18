@@ -7,10 +7,10 @@ app_group: "appgroup"
 app_uid: 1001
 app_gid: 1001
 
-# Directories
-app_install_dir: "/opt/security-log-review"
-app_config_dir: "/etc/security-log-review"
-app_log_dir: "/var/log/security-log-review"
+# Persistent Host-Mounted Directory Paths
+app_install_dir: "/workspace/ansible/runtime/opt/security-log-review"
+app_config_dir: "/workspace/ansible/runtime/etc/security-log-review"
+app_log_dir: "/workspace/ansible/runtime/var/log/security-log-review"
 
 # Runtime & Ports
 deploy_port: 8080
