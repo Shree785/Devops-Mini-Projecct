@@ -1,0 +1,103 @@
+---
+# ==============================================================================
+# Tasks for role: security_log_app
+# Enterprise Automated Provisioning & Continuous Configuration
+# ==============================================================================
+
+- name: "[1/9] Display Provisioning Target & Environment Context"
+  ansible.builtin.debug:
+    msg:
+      - "Target Host     : {{ inventory_hostname }}"
+      - "Application     : {{ app_name }}:{{ app_version }}"
+      - "Environment     : {{ app_env }}"
+      - "Target Port     : {{ deploy_port }}"
+      - "Container Image : {{ docker_image }}"
+
+- name: "[2/9] Verify Docker Daemon Availability"
+  ansible.builtin.command:
+    cmd: "docker info"
+  register: docker_check
+  changed_when: false
+  failed_when: docker_check.rc != 0
+
+- name: "[3/9] Ensure Application Directory Hierarchy Exists"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ app_install_dir }}"
+    - "{{ app_config_dir }}"
+    - "{{ app_log_dir }}"
+
+- name: "[4/9] Deploy Managed Application Configuration (Jinja2 Template)"
+  ansible.builtin.template:
+    src: "application-production.properties.j2"
+    dest: "{{ app_config_dir }}/application-production.properties"
+    mode: '0644'
+  notify: Restart security-log-review container
+
+- name: "[5/9] Verify Production Container Image Availability"
+  ansible.builtin.command:
+    cmd: "docker image inspect {{ docker_image }}"
+  register: image_inspect
+  changed_when: false
+  failed_when: image_inspect.rc != 0
+
+- name: "[6/9] Drain & Terminate Existing Container Instance (Zero-Downtime Clean Up)"
+  ansible.builtin.shell: |
+    if docker ps -a --format '{% raw %}{{.Names}}{% endraw %}' | grep -Eq '^{{ docker_container }}$'; then
+      docker stop -t 15 {{ docker_container }} || true
+      docker rm {{ docker_container }} || true
+      echo "REMOVED"
+    else
+      echo "NOT_PRESENT"
+    fi
+  register: cleanup_result
+  changed_when: "'REMOVED' in cleanup_result.stdout"
+
+- name: "[7/9] Launch Provisioned Application Container"
+  ansible.builtin.command:
+    cmd: >
+      docker run -d
+      --name {{ docker_container }}
+      -p {{ deploy_port }}:8080
+      -e SERVER_PORT=8080
+      -e SPRING_PROFILES_ACTIVE={{ app_env }}
+      -m {{ docker_memory_limit }}
+      --cpus {{ docker_cpu_limit }}
+      --restart unless-stopped
+      {{ docker_image }}
+  register: container_launch
+  changed_when: container_launch.rc == 0
+
+- name: "[8/9] Await Spring Boot Actuator Health Probe (Quality Gate)"
+  ansible.builtin.uri:
+    url: "{{ healthcheck_endpoint }}"
+    method: GET
+    status_code: 200
+    return_content: true
+  register: health_response
+  until: health_response.status == 200 and 'UP' in health_response.content
+  retries: "{{ healthcheck_retries }}"
+  delay: "{{ healthcheck_delay }}"
+
+- name: "[9/9] Verify SOC Posture Dashboard Endpoint"
+  ansible.builtin.uri:
+    url: "{{ dashboard_endpoint }}"
+    method: GET
+    status_code: 200
+  register: dash_response
+  failed_when: dash_response.status != 200
+
+- name: "Display Ansible Provisioning Verification Summary"
+  ansible.builtin.debug:
+    msg:
+      - "=========================================================="
+      - " [ANSIBLE PROVISIONING SUCCESS] System Fully Operational!"
+      - " Application Container : {{ docker_container }}"
+      - " Instance ID           : {{ container_launch.stdout[:12] }}"
+      - " Health Endpoint        : {{ healthcheck_endpoint }} (UP)"
+      - " SOC Dashboard          : {{ dashboard_endpoint }} (HTTP 200)"
+      - " Configuration File     : {{ app_config_dir }}/application-production.properties"
+      - "=========================================================="

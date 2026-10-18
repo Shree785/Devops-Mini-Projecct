@@ -1,0 +1,14 @@
+---
+# ==============================================================================
+# Ansible Playbook: Targeted Infrastructure & Service Provisioning
+# ==============================================================================
+- name: "Provision Security Operations Center (SOC) Infrastructure"
+  hosts: production
+  gather_facts: true
+  vars_files:
+    - "../roles/security_log_app/defaults/main.yml"
+
+  tasks:
+    - name: "Import Security Log Application Role"
+      ansible.builtin.include_role:
+        name: security_log_app

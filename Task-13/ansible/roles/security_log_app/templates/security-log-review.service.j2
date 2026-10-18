@@ -1,0 +1,26 @@
+[Unit]
+Description=Enterprise Security Log Review System
+After=network.target docker.service
+Wants=docker.service
+
+[Service]
+Type=simple
+User={{ app_user }}
+Group={{ app_group }}
+Restart=always
+RestartSec=10
+EnvironmentFile=-{{ app_config_dir }}/environment
+ExecStartPre=-/usr/bin/docker stop {{ docker_container }}
+ExecStartPre=-/usr/bin/docker rm {{ docker_container }}
+ExecStart=/usr/bin/docker run --name {{ docker_container }} \
+    -p {{ deploy_port }}:8080 \
+    -e SERVER_PORT=8080 \
+    -e SPRING_PROFILES_ACTIVE={{ app_env }} \
+    -m {{ docker_memory_limit }} \
+    --cpus {{ docker_cpu_limit }} \
+    -v {{ app_config_dir }}/application-production.properties:/app/config/application.properties:ro \
+    {{ docker_image }}
+ExecStop=/usr/bin/docker stop -t 15 {{ docker_container }}
+
+[Install]
+WantedBy=multi-user.target
