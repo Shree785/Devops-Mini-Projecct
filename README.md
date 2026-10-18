@@ -11,9 +11,10 @@
 
 ## 1. Overview
 
-> **Branch Release Status:** Dev Integration Stream — Platform foundation and CRUD services merged.
+> **System Status (Release v1.0.0 Baseline):** Full enterprise MVP operational featuring role-based triage workflow (`NEW` ➔ `IN_REVIEW` ➔ `ESCALATED` / `RESOLVED`), real-time SOC posture dashboard, and automated regression testing.
 
 ---
+
 
 
 ## 2. Tech Stack & Architecture

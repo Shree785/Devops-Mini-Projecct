@@ -1,8 +1,10 @@
 package com.securitylog.controller;
 
+import com.securitylog.model.DashboardMetricsDto;
 import com.securitylog.model.LogStatus;
 import com.securitylog.model.SecurityLog;
 import com.securitylog.model.Severity;
+import com.securitylog.model.StatusTransitionRequest;
 import com.securitylog.service.SecurityLogService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -36,6 +38,11 @@ public class LogRestController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/metrics")
+    public ResponseEntity<DashboardMetricsDto> getMetrics() {
+        return ResponseEntity.ok(logService.getDashboardMetrics());
+    }
+
     @PostMapping
     public ResponseEntity<SecurityLog> createLog(@Valid @RequestBody SecurityLog log) {
         SecurityLog created = logService.createLog(log);
@@ -47,6 +54,24 @@ public class LogRestController {
         try {
             SecurityLog updated = logService.updateLog(id, log);
             return ResponseEntity.ok(updated);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<?> transitionStatus(@PathVariable Long id, 
+                                              @Valid @RequestBody StatusTransitionRequest request) {
+        try {
+            SecurityLog updated = logService.transitionStatus(
+                    id, 
+                    request.getTargetStatus(), 
+                    request.getReviewerName(), 
+                    request.getReviewerNotes()
+            );
+            return ResponseEntity.ok(updated);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
         }

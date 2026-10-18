@@ -1,5 +1,6 @@
 package com.securitylog.controller;
 
+import com.securitylog.model.DashboardMetricsDto;
 import com.securitylog.model.LogStatus;
 import com.securitylog.model.SecurityLog;
 import com.securitylog.model.Severity;
@@ -23,8 +24,15 @@ public class LogWebController {
     }
 
     @GetMapping("/")
-    public String index() {
-        return "redirect:/logs";
+    public String root() {
+        return "redirect:/dashboard";
+    }
+
+    @GetMapping("/dashboard")
+    public String dashboard(Model model) {
+        DashboardMetricsDto metrics = logService.getDashboardMetrics();
+        model.addAttribute("metrics", metrics);
+        return "dashboard";
     }
 
     @GetMapping("/logs")
@@ -74,6 +82,22 @@ public class LogWebController {
         model.addAttribute("log", log);
         model.addAttribute("allStatuses", LogStatus.values());
         return "log-detail";
+    }
+
+    @PostMapping("/logs/{id}/status")
+    public String transitionStatus(@PathVariable Long id,
+                                   @RequestParam("targetStatus") LogStatus targetStatus,
+                                   @RequestParam(value = "reviewerName", required = false) String reviewerName,
+                                   @RequestParam(value = "reviewerNotes", required = false) String reviewerNotes,
+                                   RedirectAttributes redirectAttributes) {
+        try {
+            logService.transitionStatus(id, targetStatus, reviewerName, reviewerNotes);
+            redirectAttributes.addFlashAttribute("successMessage", 
+                    "Log #" + id + " transitioned to status: " + targetStatus);
+        } catch (IllegalStateException | IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+        return "redirect:/logs/" + id;
     }
 
     @GetMapping("/logs/{id}/edit")
