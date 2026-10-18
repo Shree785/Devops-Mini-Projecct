@@ -1,0 +1,13 @@
+---
+# ==============================================================================
+# Master Ansible Playbook: Enterprise Security Log Review System
+# ==============================================================================
+- name: "Orchestrate Enterprise Security Log Review Infrastructure"
+  hosts: production
+  gather_facts: true
+  roles:
+    - role: security_log_app
+      tags:
+        - provision
+        - deploy
+        - app

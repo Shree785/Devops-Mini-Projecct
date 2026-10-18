@@ -1,0 +1,61 @@
+---
+# ==============================================================================
+# Ansible Playbook: Post-Deployment Audit & Compliance Verification
+# ==============================================================================
+- name: "Validate Security Operations Posture & Operational Compliance"
+  hosts: production
+  gather_facts: false
+  vars_files:
+    - "../roles/security_log_app/defaults/main.yml"
+
+  tasks:
+    - name: "[VERIFY 1/5] Inspect Container Running State"
+      ansible.builtin.command:
+        cmd: "docker inspect --format '{% raw %}{{.State.Status}}{% endraw %}' {{ docker_container }}"
+      register: container_status
+      changed_when: false
+      failed_when: container_status.stdout != 'running'
+
+    - name: "[VERIFY 2/5] Await Container Health Status (healthy)"
+      ansible.builtin.command:
+        cmd: "docker inspect --format '{% raw %}{{.State.Health.Status}}{% endraw %}' {{ docker_container }}"
+      register: health_status
+      until: health_status.stdout == 'healthy'
+      retries: 15
+      delay: 3
+      changed_when: false
+
+    - name: "[VERIFY 3/5] Query Spring Boot Actuator Health Metrics"
+      ansible.builtin.uri:
+        url: "{{ healthcheck_endpoint }}"
+        method: GET
+        status_code: 200
+        return_content: true
+      register: actuator_result
+      failed_when: "'UP' not in actuator_result.content"
+
+    - name: "[VERIFY 4/5] Validate SOC Executive Dashboard HTTP 200 OK"
+      ansible.builtin.uri:
+        url: "{{ dashboard_endpoint }}"
+        method: GET
+        status_code: 200
+      register: dashboard_result
+
+    - name: "[VERIFY 5/5] Verify In-Container Least-Privilege User"
+      ansible.builtin.command:
+        cmd: "docker exec {{ docker_container }} id -u"
+      register: user_id
+      changed_when: false
+      failed_when: user_id.stdout != '1001'
+
+    - name: "Audit Compliance Summary"
+      ansible.builtin.debug:
+        msg:
+          - "=========================================================="
+          - " [POST-DEPLOYMENT AUDIT PASSED] 100% Compliant"
+          - " Container Status     : {{ container_status.stdout }} (RUNNING)"
+          - " Docker Health        : {{ health_status.stdout }} (HEALTHY)"
+          - " Actuator Health JSON : {{ actuator_result.json.status }}"
+          - " SOC Dashboard HTTP   : {{ dashboard_result.status }} (OK)"
+          - " Security UID         : {{ user_id.stdout }} (Least Privilege)"
+          - "=========================================================="

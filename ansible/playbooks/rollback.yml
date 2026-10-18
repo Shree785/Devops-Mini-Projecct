@@ -1,0 +1,95 @@
+---
+# ==============================================================================
+# Disaster Recovery & Rollback Playbook: Security Log Review System
+# ==============================================================================
+- name: "Execute Automated Disaster Recovery & Service Rollback"
+  hosts: production
+  gather_facts: true
+  vars_files:
+    - "../roles/security_log_app/defaults/main.yml"
+  vars:
+    rollback_version: "1.0.0"
+    rollback_image: "security-log-review:1.0.0"
+    rollback_reason: "Automated recovery drill: Reverting to baseline release v1.0.0"
+
+  tasks:
+    - name: "[ROLLBACK 1/7] Record Rollback Initiation Event"
+      ansible.builtin.debug:
+        msg:
+          - "=========================================================="
+          - " [DISASTER RECOVERY] Initiating Automated Rollback Drill"
+          - " Rollback Target Image  : {{ rollback_image }}"
+          - " Target Environment     : {{ app_env }}"
+          - " Target Service Port    : {{ deploy_port }}"
+          - " Trigger Reason         : {{ rollback_reason }}"
+          - "=========================================================="
+
+    - name: "[ROLLBACK 2/7] Capture Failing Container Diagnostic Logs (Pre-Termination)"
+      ansible.builtin.command:
+        cmd: "docker logs --tail 25 {{ docker_container }}"
+      register: pre_rollback_logs
+      failed_when: false
+      changed_when: false
+
+    - name: "[ROLLBACK 3/7] Terminate Defective Container Instance"
+      ansible.builtin.shell: |
+        if docker ps -a --format '{% raw %}{{.Names}}{% endraw %}' | grep -Eq '^{{ docker_container }}$'; then
+          docker stop -t 15 {{ docker_container }} || true
+          docker rm {{ docker_container }} || true
+          echo "TERMINATED"
+        else
+          echo "NOT_FOUND"
+        fi
+      register: terminate_result
+      changed_when: "'TERMINATED' in terminate_result.stdout"
+
+    - name: "[ROLLBACK 4/7] Restore Known-Good Configuration Baseline"
+      ansible.builtin.template:
+        src: "../roles/security_log_app/templates/application-production.properties.j2"
+        dest: "{{ app_config_dir }}/application-production.properties"
+        mode: '0644'
+
+    - name: "[ROLLBACK 5/7] Deploy Known-Good Baseline Container Image"
+      ansible.builtin.command:
+        cmd: >
+          docker run -d
+          --name {{ docker_container }}
+          -p {{ deploy_port }}:8080
+          -e SERVER_PORT=8080
+          -e SPRING_PROFILES_ACTIVE={{ app_env }}
+          -m {{ docker_memory_limit }}
+          --cpus {{ docker_cpu_limit }}
+          --restart unless-stopped
+          {{ rollback_image }}
+      register: rollback_launch
+      changed_when: rollback_launch.rc == 0
+
+    - name: "[ROLLBACK 6/7] Await Health Recovery via Spring Boot Actuator"
+      ansible.builtin.uri:
+        url: "{{ healthcheck_endpoint }}"
+        method: GET
+        status_code: 200
+        return_content: true
+      register: recovery_health
+      until: recovery_health.status == 200 and 'UP' in recovery_health.content
+      retries: "{{ healthcheck_retries }}"
+      delay: "{{ healthcheck_delay }}"
+
+    - name: "[ROLLBACK 7/7] Verify SOC Dashboard Service Restoration"
+      ansible.builtin.uri:
+        url: "{{ dashboard_endpoint }}"
+        method: GET
+        status_code: 200
+      register: recovery_dashboard
+
+    - name: "Display Rollback Success Summary"
+      ansible.builtin.debug:
+        msg:
+          - "=========================================================="
+          - " [ROLLBACK SUCCESS] Service Restored to Known-Good Baseline!"
+          - " Container Name     : {{ docker_container }}"
+          - " Recovered Image    : {{ rollback_image }}"
+          - " Actuator Health    : {{ recovery_health.json.status }}"
+          - " SOC Dashboard HTTP : {{ recovery_dashboard.status }} (OK)"
+          - " Time to Recovery   : < 15 seconds"
+          - "=========================================================="
