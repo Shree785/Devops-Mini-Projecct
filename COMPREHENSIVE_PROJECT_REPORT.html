@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Security Log Review System - Comprehensive DevOps Report (Tasks 1-14)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #212529; }
+        .card-custom { border: 1px solid #d0d7de; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .task-badge { width: 75px; text-align: center; font-weight: bold; }
+        .tech-pill { font-size: 11px; background: #eef2f5; color: #0969da; padding: 2px 8px; border-radius: 12px; font-weight: 500; }
+        @media print {
+            .no-print { display: none !important; }
+            body { background: #fff; }
+            .card-custom { box-shadow: none; border: 1px solid #dee2e6; }
+        }
+    </style>
+</head>
+<body class="py-4">
+
+<div class="container" style="max-width: 1050px;">
+    <!-- Top Action Bar -->
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+        <div>
+            <span class="badge bg-danger mb-1"><i class="bi bi-shield-lock-fill me-1"></i>DEVSECOPS PROJECT DEFENSE</span>
+            <h1 class="h2 fw-bold mb-0">Enterprise Security Log Review System</h1>
+            <p class="text-muted small mb-0">Comprehensive Lifecycle Final Report & Audit Evidence (Tasks 1 – 14)</p>
+        </div>
+        <div class="no-print">
+            <button class="btn btn-outline-dark btn-sm me-2" onclick="window.print()"><i class="bi bi-printer me-1"></i>Print / Save as PDF</button>
+            <a href="http://localhost:8080/dashboard" target="_blank" class="btn btn-primary btn-sm"><i class="bi bi-box-arrow-up-right me-1"></i>Live App</a>
+        </div>
+    </div>
+
+    <!-- Executive Overview Card -->
+    <div class="card card-custom p-4 mb-4 bg-white">
+        <h5 class="fw-bold mb-3"><i class="bi bi-info-circle-fill text-primary me-2"></i>Executive Summary & System Architecture</h5>
+        <p class="small text-muted mb-3">
+            The <strong>Security Log Review System</strong> is a Spring Boot 3 incident response platform for Security Operations Centers (SOC). It provides real-time ingestion, threat classification (<code>CRITICAL</code>, <code>HIGH</code>, <code>LOW</code>), and investigation triage. Across 14 sequential DevOps milestones, the project establishes a complete automated lifecycle encompassing GitFlow branching, declarative Jenkins CI/CD, headless Selenium continuous testing quality gates, hardened non-root Docker containers, and Ansible idempotent provisioning with automated disaster recovery rollback.
+        </p>
+
+        <div class="row g-3">
+            <div class="col-md-3">
+                <div class="p-3 bg-light rounded text-center">
+                    <span class="text-uppercase text-muted small fw-bold">DevOps Milestones</span>
+                    <h3 class="fw-bold text-success mb-0">14 / 14</h3>
+                    <small class="text-muted">100% Completed</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-3 bg-light rounded text-center">
+                    <span class="text-uppercase text-muted small fw-bold">Docker Image</span>
+                    <h3 class="fw-bold text-primary mb-0">166 MB</h3>
+                    <small class="text-muted">Alpine JRE Multi-Stage</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-3 bg-light rounded text-center">
+                    <span class="text-uppercase text-muted small fw-bold">Ansible Idempotency</span>
+                    <h3 class="fw-bold text-dark mb-0">changed=0</h3>
+                    <small class="text-muted">Proven Zero-Drift</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-3 bg-light rounded text-center">
+                    <span class="text-uppercase text-muted small fw-bold">Disaster Rollback</span>
+                    <h3 class="fw-bold text-danger mb-0">&lt; 15s</h3>
+                    <small class="text-muted">RTO Objective</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Master Milestone Matrix Table -->
+    <div class="card card-custom p-4 mb-4 bg-white">
+        <h5 class="fw-bold mb-3"><i class="bi bi-kanban-fill text-success me-2"></i>DevOps Milestone Deliverable Matrix (All 14 Tasks)</h5>
+        
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle mb-0 small">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 80px;">Task</th>
+                        <th style="width: 220px;">Milestone Title</th>
+                        <th style="width: 170px;">DevOps Technology</th>
+                        <th>Key Deliverable & Evidence File</th>
+                        <th style="width: 100px;">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="badge bg-secondary task-badge">Task 01</span></td>
+                        <td class="fw-bold">Problem Definition & Scope</td>
+                        <td><span class="tech-pill">Agile / SDLC / SRS</span></td>
+                        <td><code>Task-01/Problem_Definition_and_Scope.md</code></td>
+                        <td><span class="badge bg-success">PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge bg-secondary task-badge">Task 02</span></td>
+                        <td class="fw-bold">Agile Planning & Workflow</td>
+                        <td><span class="tech-pill">Gherkin / DoD / Sprints</span></td>
+                        <td><code>Task-02/Agile_Planning_and_Workflow.md</code></td>
+                        <td><span class="badge bg-success">PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge bg-secondary task-badge">Task 03</span></td>
+                        <td class="fw-bold">Architecture & Tech Setup</td>
+                        <td><span class="tech-pill">Spring Boot 3 / H2 DB</span></td>
+                        <td><code>Task-03/Architecture_and_Tech_Setup.md</code></td>
+                        <td><span class="badge bg-success">PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge bg-secondary task-badge">Task 04</span></td>
+                        <td class="fw-bold">Git Initialization & Governance</td>
+                        <td><span class="tech-pill">Git / Issue Templates</span></td>
+                        <td><code>Task-04/Git_Initialization_Evidence.md</code></td>
+                        <td><span class="badge bg-success">PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge bg-secondary task-badge">Task 05</span></td>
+                        <td class="fw-bold">Feature Branching & Log CRUD</td>
+                        <td><span class="tech-pill">Spring Data JPA / REST</span></td>
+                        <td><code>Task-05/Feature1_Branching_Evidence.md</code></td>
+                        <td><span class="badge bg-success">PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge bg-secondary task-badge">Task 06</span></td>
+                        <td class="fw-bold">MVP & Conflict Resolution</td>
+                        <td><span class="tech-pill">GitFlow / Tag v1.0.0</span></td>
+                        <td><code>Task-06/MVP_and_Conflict_Resolution.md</code></td>
+                        <td><span class="badge bg-success">PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge bg-secondary task-badge">Task 07</span></td>
+                        <td class="fw-bold">Jenkins CI Automation</td>
+                        <td><span class="tech-pill">Jenkins LTS / Maven 3.9</span></td>
+                        <td><code>Task-07/Jenkins_CI_Evidence.md</code></td>
+                        <td><span class="badge bg-success">PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge bg-secondary task-badge">Task 08</span></td>
+                        <td class="fw-bold">Declarative Pipeline Deployment</td>
+                        <td><span class="tech-pill">Pipeline-as-Code / Tomcat</span></td>
+                        <td><code>Task-08/Pipeline_Deployment_Evidence.md</code></td>
+                        <td><span class="badge bg-success">PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge bg-secondary task-badge">Task 09</span></td>
+                        <td class="fw-bold">Selenium Acceptance Testing</td>
+                        <td><span class="tech-pill">Selenium 4 / Chrome Headless</span></td>
+                        <td><code>Task-09/Selenium_Test_Evidence.md</code></td>
+                        <td><span class="badge bg-success">PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge bg-secondary task-badge">Task 10</span></td>
+                        <td class="fw-bold">Continuous Testing Quality Gate</td>
+                        <td><span class="tech-pill">Jenkins Gate / Surefire</span></td>
+                        <td><code>Task-10/Continuous_Testing_Evidence.md</code></td>
+                        <td><span class="badge bg-success">PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge bg-secondary task-badge">Task 11</span></td>
+                        <td class="fw-bold">Docker Containerization</td>
+                        <td><span class="tech-pill">Alpine JRE / Non-Root 1001</span></td>
+                        <td><code>Task-11/Docker_Containerization_Evidence.md</code></td>
+                        <td><span class="badge bg-success">PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge bg-secondary task-badge">Task 12</span></td>
+                        <td class="fw-bold">Docker Continuous Deployment</td>
+                        <td><span class="tech-pill">Zero-Downtime Rollout</span></td>
+                        <td><code>Task-12/Docker_CD_Pipeline_Evidence.md</code></td>
+                        <td><span class="badge bg-success">PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge bg-secondary task-badge">Task 13</span></td>
+                        <td class="fw-bold">Ansible Configuration Mgmt</td>
+                        <td><span class="tech-pill">Ansible Roles / Jinja2</span></td>
+                        <td><code>Task-13/Ansible_Configuration_Evidence.md</code></td>
+                        <td><span class="badge bg-success">PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge bg-secondary task-badge">Task 14</span></td>
+                        <td class="fw-bold">Provisioning, Idempotency & Rollback</td>
+                        <td><span class="tech-pill">changed=0 / Tag v1.1.0</span></td>
+                        <td><code>Task-14/Provisioning_Idempotency_Rollback_Evidence.md</code></td>
+                        <td><span class="badge bg-success">PASS</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Verification Audit Checkpoints -->
+    <div class="card card-custom p-4 mb-4 bg-white">
+        <h5 class="fw-bold mb-3"><i class="bi bi-patch-check-fill text-warning me-2"></i>Audit Verification Evidence Summary</h5>
+        
+        <div class="row g-3 small">
+            <div class="col-md-6">
+                <ul class="list-group list-group-flush border rounded">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-check-circle-fill text-success me-2"></i>Automated Unit Tests</span>
+                        <span class="badge bg-success">15 / 15 Passed (0 Failures)</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-check-circle-fill text-success me-2"></i>Selenium Acceptance Journeys</span>
+                        <span class="badge bg-success">5 / 5 Verified Headless</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-check-circle-fill text-success me-2"></i>Defect Injection Quality Gate</span>
+                        <span class="badge bg-success">Verified: Halted Deployment</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-check-circle-fill text-success me-2"></i>Jenkins CI/CD Build #3</span>
+                        <span class="badge bg-success">100% Green / All Stages Pass</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <ul class="list-group list-group-flush border rounded">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-check-circle-fill text-success me-2"></i>Docker Image Footprint</span>
+                        <span class="badge bg-primary">166 MB (Alpine JRE)</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-check-circle-fill text-success me-2"></i>Container Security Context</span>
+                        <span class="badge bg-primary">Non-Root User (UID 1001)</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-check-circle-fill text-success me-2"></i>Ansible Re-run Idempotency</span>
+                        <span class="badge bg-dark">ok=10 changed=0 failed=0</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-check-circle-fill text-success me-2"></i>Disaster Recovery RTO</span>
+                        <span class="badge bg-danger">&lt; 15s via rollback.yml</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

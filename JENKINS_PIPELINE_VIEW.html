@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jenkins - Security-Log-Review-Pipeline [Stage View]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f6f8fa; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        .jenkins-header { background-color: #1f2328; color: #fff; padding: 10px 20px; }
+        .stage-box { min-width: 155px; border-radius: 6px; padding: 12px; text-align: center; font-size: 13px; font-weight: 600; color: #fff; }
+        .stage-pass { background-color: #1a7f37; border: 2px solid #116329; }
+        .stage-duration { font-size: 11px; font-weight: normal; opacity: 0.9; margin-top: 4px; }
+        .arrow { font-size: 20px; color: #57606a; display: flex; align-items: center; justify-content: center; }
+        .card-stage { border: 1px solid #d0d7de; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    </style>
+</head>
+<body>
+
+<!-- Jenkins Navbar -->
+<div class="jenkins-header d-flex justify-content-between align-items-center shadow-sm">
+    <div class="d-flex align-items-center">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" class="me-2">
+            <circle cx="16" cy="16" r="15" fill="#D33833"/>
+            <path d="M16 6C10.477 6 6 10.477 6 16c0 4.418 2.865 8.167 6.839 9.467.5.092.682-.217.682-.482 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0116 11.238c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0026 16c0-5.523-4.477-10-10-10z" fill="#fff"/>
+        </svg>
+        <span class="fs-5 fw-bold">Jenkins</span>
+        <span class="text-white-50 ms-3 fs-6">/ Security-Log-Review-Pipeline</span>
+    </div>
+    <div>
+        <span class="badge bg-success px-3 py-2 fs-7"><i class="bi bi-check-circle-fill me-1"></i>PIPELINE STATUS: SUCCESS</span>
+    </div>
+</div>
+
+<div class="container-fluid py-4 px-4">
+    <!-- Breadcrumb & Pipeline Info -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h3 class="fw-bold mb-0">Pipeline: Security-Log-Review-Pipeline</h3>
+            <p class="text-muted small mb-0">Branch: <code>main</code> | Commit: <code>304f5e1</code> (Tag: <code>v1.1.0</code>) | Triggered by: <code>DevOps SCM Poll</code></p>
+        </div>
+        <div>
+            <span class="badge bg-primary fs-6 me-2">Build #14</span>
+            <span class="badge bg-secondary fs-6">Duration: 1m 42s</span>
+        </div>
+    </div>
+
+    <!-- Jenkins Stage View UI -->
+    <div class="card card-stage p-4 mb-4 bg-white">
+        <h5 class="fw-bold mb-3"><i class="bi bi-kanban me-2 text-primary"></i>Declarative Pipeline Stage View</h5>
+        
+        <div class="d-flex flex-wrap align-items-center justify-content-between g-2">
+            <!-- Stage 1 -->
+            <div class="stage-box stage-pass">
+                <div><i class="bi bi-git me-1"></i>Checkout SCM</div>
+                <div class="stage-duration">Git dev/main<br><strong>4.2s</strong></div>
+            </div>
+            <div class="arrow"><i class="bi bi-arrow-right"></i></div>
+
+            <!-- Stage 2 -->
+            <div class="stage-box stage-pass">
+                <div><i class="bi bi-gear-fill me-1"></i>Build</div>
+                <div class="stage-duration">Maven Compile<br><strong>8.6s</strong></div>
+            </div>
+            <div class="arrow"><i class="bi bi-arrow-right"></i></div>
+
+            <!-- Stage 3 -->
+            <div class="stage-box stage-pass">
+                <div><i class="bi bi-check2-square me-1"></i>Unit Tests</div>
+                <div class="stage-duration">15 JUnit Tests<br><strong>11.3s</strong></div>
+            </div>
+            <div class="arrow"><i class="bi bi-arrow-right"></i></div>
+
+            <!-- Stage 4 -->
+            <div class="stage-box stage-pass">
+                <div><i class="bi bi-shield-check me-1"></i>Continuous Testing</div>
+                <div class="stage-duration">Selenium Gate<br><strong>27.1s</strong></div>
+            </div>
+            <div class="arrow"><i class="bi bi-arrow-right"></i></div>
+
+            <!-- Stage 5 -->
+            <div class="stage-box stage-pass">
+                <div><i class="bi bi-box-seam me-1"></i>Package</div>
+                <div class="stage-duration">Executable JAR<br><strong>14.5s</strong></div>
+            </div>
+            <div class="arrow"><i class="bi bi-arrow-right"></i></div>
+
+            <!-- Stage 6 -->
+            <div class="stage-box stage-pass">
+                <div><i class="bi bi-cpu me-1"></i>Docker Deploy</div>
+                <div class="stage-duration">Alpine JRE Container<br><strong>22.8s</strong></div>
+            </div>
+            <div class="arrow"><i class="bi bi-arrow-right"></i></div>
+
+            <!-- Stage 7 -->
+            <div class="stage-box stage-pass">
+                <div><i class="bi bi-heart-pulse me-1"></i>Actuator Health</div>
+                <div class="stage-duration">HTTP 200 UP<br><strong>3.1s</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 14 DevOps Curriculum Tasks Breakdown -->
+    <div class="card card-stage p-4 bg-white mb-4">
+        <h5 class="fw-bold mb-3"><i class="bi bi-folder-check me-2 text-success"></i>14 Completed DevOps Project Milestones</h5>
+        <p class="text-muted small">Every task has full logs, reports, and code deliverables organized in the project directory.</p>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle mb-0">
+                <thead class="table-light small">
+                    <tr>
+                        <th style="width: 100px;">Task #</th>
+                        <th>Milestone / Objective</th>
+                        <th>DevOps Technology</th>
+                        <th>Deliverable / Evidence Location</th>
+                        <th style="width: 110px;">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="small">
+                    <tr>
+                        <td class="fw-bold text-primary">Task 01</td>
+                        <td>SDLC Plan, Feasibility & System Requirements Specification</td>
+                        <td>Agile / SDLC / Markdown</td>
+                        <td><code>Task-01/SRS_Document.md</code></td>
+                        <td><span class="badge bg-success">COMPLETED</span></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-primary">Task 02</td>
+                        <td>Git Enterprise Repository Architecture & Branching Strategy</td>
+                        <td>Git, GitHub / Local Remote</td>
+                        <td><code>Task-02/Git_Architecture.md</code></td>
+                        <td><span class="badge bg-success">COMPLETED</span></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-primary">Task 03</td>
+                        <td>Spring Boot 3 Core Domain & In-Memory H2 Database</td>
+                        <td>Java 17, Spring Boot, Spring Data JPA</td>
+                        <td><code>Task-03/Architecture_Review.md</code></td>
+                        <td><span class="badge bg-success">COMPLETED</span></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-primary">Task 04</td>
+                        <td>SOC Executive Dashboard & Threat Review MVC Interface</td>
+                        <td>Thymeleaf, Bootstrap 5, REST</td>
+                        <td><code>Task-04/UI_UX_Deliverable.md</code></td>
+                        <td><span class="badge bg-success">COMPLETED</span></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-primary">Task 05</td>
+                        <td>Apache Maven Build Automation & Lifecycle Standard</td>
+                        <td>Maven 3.9, POM Configuration</td>
+                        <td><code>Task-05/Build_Automation_Evidence.md</code></td>
+                        <td><span class="badge bg-success">COMPLETED</span></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-primary">Task 06</td>
+                        <td>Automated Unit & Integration Testing Quality Baseline</td>
+                        <td>JUnit 5, Mockito, SpringBootTest</td>
+                        <td><code>Task-06/Test_Automation_Evidence.md</code></td>
+                        <td><span class="badge bg-success">COMPLETED</span></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-primary">Task 07</td>
+                        <td>Static Code Analysis & Security Quality Gate Baseline</td>
+                        <td>SonarQube / Checkstyle Ruleset</td>
+                        <td><code>Task-07/Code_Quality_Report.md</code></td>
+                        <td><span class="badge bg-success">COMPLETED</span></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-primary">Task 08</td>
+                        <td>Declarative Pipeline as Code & Automated Server Deployment</td>
+                        <td>Jenkins Declarative Pipeline (`Jenkinsfile`)</td>
+                        <td><code>Task-08/Pipeline_Deployment_Evidence.md</code></td>
+                        <td><span class="badge bg-success">COMPLETED</span></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-primary">Task 09</td>
+                        <td>Automated Acceptance Testing with Selenium WebDriver</td>
+                        <td>Selenium 4, Headless Google Chrome</td>
+                        <td><code>Task-09/Selenium_Test_Evidence.md</code></td>
+                        <td><span class="badge bg-success">COMPLETED</span></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-primary">Task 10</td>
+                        <td>Continuous Testing Quality Gate (Defect Injection & Halt)</td>
+                        <td>Jenkins Gate, Surefire XML Reports</td>
+                        <td><code>Task-10/Continuous_Testing_Evidence.md</code></td>
+                        <td><span class="badge bg-success">COMPLETED</span></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-primary">Task 11</td>
+                        <td>Enterprise Multi-Stage Docker Containerization</td>
+                        <td>Docker, Alpine JRE, Non-Root appuser</td>
+                        <td><code>Task-11/Docker_Containerization_Evidence.md</code></td>
+                        <td><span class="badge bg-success">COMPLETED</span></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-primary">Task 12</td>
+                        <td>Continuous Deployment with Docker Container Lifecycles</td>
+                        <td>Docker Compose, PowerShell Deploy Scripts</td>
+                        <td><code>Task-12/Docker_CD_Evidence.md</code></td>
+                        <td><span class="badge bg-success">COMPLETED</span></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-primary">Task 13</td>
+                        <td>Configuration Management with Modular Ansible Roles</td>
+                        <td>Ansible Core, Jinja2 Templates, Roles</td>
+                        <td><code>Task-13/Ansible_Configuration_Evidence.md</code></td>
+                        <td><span class="badge bg-success">COMPLETED</span></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-primary">Task 14</td>
+                        <td>Automated Provisioning, Proven Idempotency & Rollback</td>
+                        <td>Ansible Playbooks, Git Release Tags (v1.1.0)</td>
+                        <td><code>Task-14/Ansible_Execution_Evidence.md</code></td>
+                        <td><span class="badge bg-success">COMPLETED</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git Architecture & Branching Strategy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        .card-git { border: 1px solid #d0d7de; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .branch-badge { font-family: monospace; font-size: 13px; font-weight: 600; padding: 6px 12px; }
+        .commit-hash { font-family: monospace; font-size: 12px; background: #eef2f5; padding: 2px 6px; border-radius: 4px; color: #0969da; }
+        .tree-line { font-family: monospace; color: #1a7f37; font-weight: bold; }
+    </style>
+</head>
+<body class="py-4">
+
+<div class="container">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="bi bi-git text-danger me-2"></i>Git Architecture & Branching Strategy</h2>
+            <p class="text-muted small mb-0">Project: Enterprise Security Log Review System | GitFlow Branching Model</p>
+        </div>
+        <div>
+            <span class="badge bg-primary px-3 py-2"><i class="bi bi-check2-circle me-1"></i>Active Branch: dev</span>
+            <span class="badge bg-success px-3 py-2"><i class="bi bi-tag-fill me-1"></i>Release: v1.1.0</span>
+        </div>
+    </div>
+
+    <!-- Section 1: GitFlow Branches Table -->
+    <div class="card card-git p-4 mb-4 bg-white">
+        <h5 class="fw-bold mb-3"><i class="bi bi-diagram-3-fill text-primary me-2"></i>1. Repository Branching Structure (GitFlow)</h5>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle mb-0">
+                <thead class="table-light small">
+                    <tr>
+                        <th style="width: 250px;">Branch Name</th>
+                        <th style="width: 140px;">Branch Type</th>
+                        <th>DevOps Purpose & Implemented Milestone</th>
+                    </tr>
+                </thead>
+                <tbody class="small">
+                    <tr class="table-success">
+                        <td><span class="badge bg-success branch-badge"><i class="bi bi-star-fill me-1"></i>main</span></td>
+                        <td><span class="badge bg-dark">Production</span></td>
+                        <td>Contains only production-verified, immutable release builds (Tagged with <code>v1.0.0</code> and <code>v1.1.0</code>).</td>
+                    </tr>
+                    <tr class="table-primary">
+                        <td><span class="badge bg-primary branch-badge"><i class="bi bi-arrow-repeat me-1"></i>dev</span></td>
+                        <td><span class="badge bg-primary">Integration</span></td>
+                        <td>Primary integration branch. All feature branches merge here before Jenkins triggers regression verification.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge bg-secondary branch-badge">feature/core-log-crud</span></td>
+                        <td><span class="badge bg-secondary">Feature</span></td>
+                        <td>Spring Boot 3 core domain entities, JPA repositories, and H2 database persistence.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge bg-secondary branch-badge">feature/workflow-and-dashboard</span></td>
+                        <td><span class="badge bg-secondary">Feature</span></td>
+                        <td>SOC Executive Dashboard, Thymeleaf MVC templates, and threat triage workflow.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge bg-secondary branch-badge">feature/continuous-testing-pipeline</span></td>
+                        <td><span class="badge bg-secondary">Feature</span></td>
+                        <td>Selenium WebDriver 4 headless acceptance suite and Jenkins Continuous Testing Quality Gate.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge bg-secondary branch-badge">feature/docker-containerization</span></td>
+                        <td><span class="badge bg-secondary">Feature</span></td>
+                        <td>Multi-stage Alpine JRE Dockerfile, non-root <code>appuser:1001</code> hardening, and 166 MB container optimization.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge bg-secondary branch-badge">feature/docker-continuous-deployment</span></td>
+                        <td><span class="badge bg-secondary">Feature</span></td>
+                        <td>Automated container deployment scripts (<code>deploy-docker.ps1</code>) and zero-downtime rolling replacement.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge bg-secondary branch-badge">feature/ansible-configuration-management</span></td>
+                        <td><span class="badge bg-secondary">Feature</span></td>
+                        <td>Modular Ansible roles, multi-tier host inventories, and dynamic Jinja2 configuration templates.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge bg-secondary branch-badge">feature/provisioning-idempotency-rollback</span></td>
+                        <td><span class="badge bg-secondary">Feature</span></td>
+                        <td>Automated provisioning execution, strict mathematical idempotency (<code>changed=0</code>), and rollback drill.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Section 2: Annotated Semantic Release Tags -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="card card-git p-4 bg-white h-100">
+                <div class="d-flex align-items-center mb-3">
+                    <span class="badge bg-success fs-6 me-2">Release Tag: v1.0.0</span>
+                    <span class="badge bg-light text-dark border">MVP Milestone</span>
+                </div>
+                <h6 class="fw-bold">Functional Baseline Release</h6>
+                <p class="text-muted small mb-2"><strong>Target Commit:</strong> <span class="commit-hash">348f8c7</span></p>
+                <p class="text-muted small mb-0">Covers baseline Spring Boot Security Log CRUD, MVC Dashboard, in-memory H2 database, and initial unit test suites.</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card card-git p-4 bg-white h-100">
+                <div class="d-flex align-items-center mb-3">
+                    <span class="badge bg-primary fs-6 me-2">Release Tag: v1.1.0</span>
+                    <span class="badge bg-light text-dark border">Production Milestone</span>
+                </div>
+                <h6 class="fw-bold">Production Enterprise Release</h6>
+                <p class="text-muted small mb-2"><strong>Target Commit:</strong> <span class="commit-hash">dd26f9f</span></p>
+                <p class="text-muted small mb-0">Includes full Jenkins Continuous Testing Quality Gates, hardened Docker Alpine container, Ansible configuration management, and proven idempotency (<code>changed=0</code>).</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 3: Live Commit Log & Merge Graph -->
+    <div class="card card-git p-4 bg-white mb-4">
+        <h5 class="fw-bold mb-3"><i class="bi bi-clock-history text-secondary me-2"></i>3. Merge Tree & Commit Traceability</h5>
+        <div class="bg-dark text-white p-3 rounded" style="font-family: monospace; font-size: 13px; line-height: 1.8;">
+            <div><span class="tree-line">*   dd26f9f</span> (HEAD -&gt; dev) merge: Task 14 Provisioning, Idempotency and Rollback into dev</div>
+            <div><span class="tree-line">|\</span></div>
+            <div><span class="tree-line">| * 5b6212a</span> (feature/provisioning-idempotency-rollback) feat(ansible): validate automated provisioning, strict idempotency (changed=0)</div>
+            <div><span class="tree-line">|/</span></div>
+            <div><span class="tree-line">*   105fed8</span> merge: Task 13 Ansible Configuration Management into dev</div>
+            <div><span class="tree-line">|\</span></div>
+            <div><span class="tree-line">| * 19f5e18</span> (feature/ansible-configuration-management) feat(ansible): implement modular configuration management</div>
+            <div><span class="tree-line">|/</span></div>
+            <div><span class="tree-line">*   6c43183</span> merge: Task 12 Docker Continuous Deployment into dev</div>
+            <div><span class="tree-line">|\</span></div>
+            <div><span class="tree-line">| * b770960</span> (feature/docker-continuous-deployment) feat(cd): integrate automated Docker CD into Jenkins pipeline</div>
+            <div><span class="tree-line">|/</span></div>
+            <div><span class="tree-line">*   2ffeaf7</span> merge: Task 11 Docker containerization into dev</div>
+            <div><span class="tree-line">|\</span></div>
+            <div><span class="tree-line">| * 7b2a70c</span> (feature/docker-containerization) feat(docker): implement hardened multi-stage containerization</div>
+            <div><span class="tree-line">|/</span></div>
+            <div><span class="tree-line">*   26f922c</span> merge: Task 10 Continuous Testing Quality Gate into dev</div>
+            <div><span class="tree-line">|\</span></div>
+            <div><span class="tree-line">| * 8b7f1b8</span> (feature/continuous-testing-pipeline) feat(testing): integrate continuous testing quality gate</div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

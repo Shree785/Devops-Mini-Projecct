@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevOps Project Presentation - Amogh Kulkarni</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --cyan: #0ea5e9;
+      --blue: #3b82f6;
+      --green: #10b981;
+      --amber: #f59e0b;
+      --purple: #8b5cf6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #020617;
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 20px;
+      background: #0f172a;
+      padding: 10px 20px;
+      border-radius: 9999px;
+      border: 1px solid #334155;
+    }
+    .btn {
+      background: #1e293b;
+      border: 1px solid #475569;
+      color: #f8fafc;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .btn:hover { background: var(--cyan); border-color: var(--cyan); color: #0f172a; }
+    .counter { font-size: 14px; font-weight: bold; color: var(--cyan); min-width: 70px; text-align: center; }
+
+    .slide-viewport {
+      width: 100%;
+      max-width: 1050px;
+      aspect-ratio: 16 / 9;
+      position: relative;
+      background: var(--bg);
+      border-radius: 16px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      border: 1px solid #334155;
+      overflow: hidden;
+    }
+    .slide {
+      position: absolute;
+      inset: 0;
+      padding: 45px 55px;
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .slide.active {
+      display: flex;
+      opacity: 1;
+    }
+    .slide-top-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, var(--cyan), var(--blue), var(--purple));
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      background: rgba(14, 165, 233, 0.15);
+      color: var(--cyan);
+      border: 1px solid rgba(14, 165, 233, 0.3);
+      margin-bottom: 12px;
+    }
+    .slide-title {
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+      margin-bottom: 24px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      flex: 1;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      flex: 1;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px 24px;
+      border: 1px solid #334155;
+      border-left: 4px solid var(--cyan);
+      display: flex;
+      flex-direction: column;
+    }
+    .card.blue { border-left-color: var(--blue); }
+    .card.green { border-left-color: var(--green); }
+    .card.amber { border-left-color: var(--amber); }
+    .card.purple { border-left-color: var(--purple); }
+
+    .card-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 13.5px;
+      line-height: 1.45;
+      color: #cbd5e1;
+    }
+    .card-list li {
+      position: relative;
+      padding-left: 18px;
+    }
+    .card-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--cyan);
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .card-list strong { color: #f8fafc; }
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      border-top: 1px solid #334155;
+      padding-top: 14px;
+      margin-top: 15px;
+    }
+    /* Title slide styling */
+    .title-slide {
+      justify-content: center;
+      gap: 20px;
+    }
+    .big-title {
+      font-size: 44px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.15;
+    }
+    .big-sub {
+      font-size: 16px;
+      color: var(--text-muted);
+      max-width: 800px;
+      line-height: 1.5;
+    }
+    .author-box {
+      margin-top: 15px;
+      display: flex;
+      gap: 20px;
+    }
+    .author-card {
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid #475569;
+      border-radius: 12px;
+      padding: 16px 24px;
+      flex: 1;
+    }
+    .author-card h4 { font-size: 12px; text-transform: uppercase; color: var(--cyan); letter-spacing: 0.05em; margin-bottom: 6px; }
+    .author-card p { font-size: 15px; color: #f8fafc; font-weight: 600; line-height: 1.4; }
+    .author-card span { font-size: 13px; color: var(--text-muted); font-weight: normal; }
+
+    @media print {
+      body { background: #fff; padding: 0; }
+      .toolbar { display: none; }
+      .slide-viewport { max-width: 100%; aspect-ratio: unset; box-shadow: none; border: none; }
+      .slide { position: relative; display: flex !important; opacity: 1 !important; page-break-after: always; height: 100vh; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <button class="btn" onclick="prevSlide()">❮ Previous</button>
+    <div class="counter" id="counter">1 / 6</div>
+    <button class="btn" onclick="nextSlide()">Next ❯</button>
+    <button class="btn" onclick="window.print()">🖨️ Print / Save PDF</button>
+  </div>
+
+  <div class="slide-viewport">
+    <div class="slide-top-bar"></div>
+
+    <!-- SLIDE 1: TITLE SLIDE -->
+    <div class="slide title-slide active" id="slide-1">
+      <div>
+        <div class="badge">DEVOPS ENGINEERING CAPSTONE</div>
+        <h1 class="big-title">Ansible-Provisioned Security<br><span style="color: var(--cyan);">Log Review System</span></h1>
+        <p class="big-sub">End-to-End DevSecOps Automation: Spring Boot 3, GitFlow, Automated CI/CD Testing Quality Gates, Hardened Containerization & Idempotent Ansible Orchestration.</p>
+      </div>
+      <div class="author-box">
+        <div class="author-card">
+          <h4>Student Presenter</h4>
+          <p>Amogh Kulkarni</p>
+          <span>Roll No: 23102C0003 &bull; Cloud & DevOps</span>
+        </div>
+        <div class="author-card">
+          <h4>Project Scope</h4>
+          <p>14 Realized DevOps Tasks</p>
+          <span>15 Unit + Selenium Gates &bull; 166 MB Alpine &bull; changed=0</span>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>DevSecOps Capstone Viva Presentation</span>
+        <span>Slide 1 of 6</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: PROBLEM STATEMENT & OBJECTIVES -->
+    <div class="slide" id="slide-2">
+      <div>
+        <div class="badge">PROJECT MOTIVATION</div>
+        <h2 class="slide-title">Problem Statement & Project Objectives</h2>
+      </div>
+      <div class="grid-2">
+        <div class="card amber">
+          <div class="card-title">⚠️ The Security Operations Problem</div>
+          <ul class="card-list">
+            <li><strong>Alert Fatigue:</strong> SOC analysts are overwhelmed by millions of raw, heterogeneous log lines with zero triage.</li>
+            <li><strong>Delayed Incident Response:</strong> High-severity intrusion events go unnoticed due to slow manual log parsing.</li>
+            <li><strong>Configuration Drift:</strong> Manual server setups cause environment discrepancies and frequent deployment downtime.</li>
+            <li><strong>Missing Quality Gates:</strong> Vulnerable and breaking code frequently escapes into production without automated tests.</li>
+          </ul>
+        </div>
+        <div class="card blue">
+          <div class="card-title">🎯 Core Engineering Objectives</div>
+          <ul class="card-list">
+            <li><strong>Automated Log Ingestion:</strong> Real-time regex parsing, classification, and severity tagging (CRITICAL, WARN, INFO).</li>
+            <li><strong>Continuous Quality Gates:</strong> Jenkins CI pipeline executing 15 JUnit and headless Selenium tests prior to packaging.</li>
+            <li><strong>Production-Hardened Container:</strong> Multi-stage build on Alpine Linux running under non-root account (<code>appuser:1001</code>).</li>
+            <li><strong>Idempotent Orchestration:</strong> Complete Ansible playbook automation with verified <code>changed=0</code> and 15s rollback.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>DevSecOps Capstone Project &bull; Amogh Kulkarni (23102C0003)</span>
+        <span>Slide 2 of 6</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: ARCHITECTURE & TECH STACK -->
+    <div class="slide" id="slide-3">
+      <div>
+        <div class="badge">SYSTEM DESIGN</div>
+        <h2 class="slide-title">System Architecture & Core Technology Stack</h2>
+      </div>
+      <div class="grid-3">
+        <div class="card blue">
+          <div class="card-title">⚙️ Backend Engine</div>
+          <ul class="card-list">
+            <li><strong>Spring Boot 3.2.x:</strong> Modern microservice framework with Java 17 LTS.</li>
+            <li><strong>Embedded Tomcat 10:</strong> Lightweight, container-optimized HTTP runtime.</li>
+            <li><strong>Spring Security:</strong> Role-based access control protecting triage routes.</li>
+            <li><strong>Actuator:</strong> Production telemetry (<code>/actuator/health</code>).</li>
+          </ul>
+        </div>
+        <div class="card green">
+          <div class="card-title">💾 Data & UI</div>
+          <ul class="card-list">
+            <li><strong>In-Memory H2 DB:</strong> Zero external dependency, sub-millisecond querying.</li>
+            <li><strong>Spring Data JPA:</strong> Automated persistence & event stream indexing.</li>
+            <li><strong>Thymeleaf 3:</strong> Server-side responsive HTML5 views.</li>
+            <li><strong>Bootstrap 5:</strong> Clean dark/light dashboards with live log search.</li>
+          </ul>
+        </div>
+        <div class="card purple">
+          <div class="card-title">🚀 DevOps Pipeline</div>
+          <ul class="card-list">
+            <li><strong>GitFlow:</strong> Feature &rarr; develop &rarr; main branching with protection.</li>
+            <li><strong>Apache Maven:</strong> Deterministic packaging & dependency management.</li>
+            <li><strong>Docker:</strong> 166 MB hardened multi-stage image.</li>
+            <li><strong>Ansible:</strong> Declarative IaC for deployment & disaster recovery.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>DevSecOps Capstone Project &bull; Amogh Kulkarni (23102C0003)</span>
+        <span>Slide 3 of 6</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: CI/CD PIPELINE & QUALITY GATE -->
+    <div class="slide" id="slide-4">
+      <div>
+        <div class="badge">QUALITY ASSURANCE</div>
+        <h2 class="slide-title">CI/CD Pipeline & Continuous Testing Quality Gate</h2>
+      </div>
+      <div class="grid-2">
+        <div class="card blue">
+          <div class="card-title">🔄 Jenkins Pipeline Workflow</div>
+          <ul class="card-list">
+            <li><strong>Declarative Jenkinsfile:</strong> Automated stages for Checkout, Build, Unit Test, UI Test, Package, and Deploy.</li>
+            <li><strong>Webhook Triggers:</strong> Immediate validation triggered on every Git commit and pull request.</li>
+            <li><strong>Artifact Archiving:</strong> Proven, reproducible Spring Boot JAR artifacts automatically tagged and archived.</li>
+            <li><strong>Automated Quality Gate:</strong> Pipeline automatically fails and aborts build if any test or assertion fails.</li>
+          </ul>
+        </div>
+        <div class="card green">
+          <div class="card-title">🧪 Comprehensive Test Verification</div>
+          <ul class="card-list">
+            <li><strong>15 JUnit Unit Tests:</strong> Validates log parsing, regex extraction, alert severity thresholds, and search filters.</li>
+            <li><strong>Selenium UI Automation:</strong> Headless Chrome tests simulating user login, log review dashboard, and query filters.</li>
+            <li><strong>Defect Injection Validation:</strong> Injected faulty assertions to prove that pipeline blocks bad builds before production.</li>
+            <li><strong>Audit Reports:</strong> Jenkins publishes Surefire XML reports and browser snapshots for test traceability.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>DevSecOps Capstone Project &bull; Amogh Kulkarni (23102C0003)</span>
+        <span>Slide 4 of 6</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: DOCKER CONTAINERIZATION & HARDENING -->
+    <div class="slide" id="slide-5">
+      <div>
+        <div class="badge">CONTAINER SECURITY</div>
+        <h2 class="slide-title">Docker Hardening & Cloud-Ready Packaging</h2>
+      </div>
+      <div class="grid-2">
+        <div class="card purple">
+          <div class="card-title">📦 Container Optimization</div>
+          <ul class="card-list">
+            <li><strong>Multi-Stage Build:</strong> Maven compile environment is separated from runtime; final image is only <strong>166 MB</strong>.</li>
+            <li><strong>Alpine Linux 3.19:</strong> Minimal operating system footprint drastically cuts potential vulnerability surface.</li>
+            <li><strong>Docker Layer Caching:</strong> Dependencies copied before source files for rapid, incremental build iterations.</li>
+            <li><strong>Isolated Bridge Network:</strong> Only port 8080 exposed with strict container communication boundaries.</li>
+          </ul>
+        </div>
+        <div class="card amber">
+          <div class="card-title">🛡️ Security Hardening Standards</div>
+          <ul class="card-list">
+            <li><strong>Non-Root User:</strong> Runs strictly under service account <code>appuser:1001</code> to prevent root escape risks.</li>
+            <li><strong>Filesystem Protection:</strong> Core runtime filesystem locked down against unauthorized modifications.</li>
+            <li><strong>Built-in Health Checks:</strong> Probes <code>GET /actuator/health</code> every 15s to detect and restart hung services.</li>
+            <li><strong>Graceful Shutdown:</strong> Handles SIGTERM cleanly to complete active log reviews before termination.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>DevSecOps Capstone Project &bull; Amogh Kulkarni (23102C0003)</span>
+        <span>Slide 5 of 6</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: ANSIBLE ORCHESTRATION & ROLLBACK -->
+    <div class="slide" id="slide-6">
+      <div>
+        <div class="badge">INFRASTRUCTURE AS CODE</div>
+        <h2 class="slide-title">Ansible Provisioning, Idempotency & Rollback</h2>
+      </div>
+      <div class="grid-2">
+        <div class="card blue">
+          <div class="card-title">📜 Declarative Configuration</div>
+          <ul class="card-list">
+            <li><strong>Modular Roles:</strong> Clean separation for prerequisite packages, Docker engine, security rules, and app deploy.</li>
+            <li><strong>Jinja2 Templating:</strong> Dynamic configuration of environment files, systemd services, and log settings.</li>
+            <li><strong>Verified Idempotency:</strong> Consecutive playbook execution produces <code>changed=0, failed=0</code>.</li>
+            <li><strong>Environment Parity:</strong> Identical declarative playbooks used across staging and production environments.</li>
+          </ul>
+        </div>
+        <div class="card green">
+          <div class="card-title">⚡ Rapid Disaster Recovery</div>
+          <ul class="card-list">
+            <li><strong>Sub-15s Rollback (RTO &lt; 15s):</strong> Automated rollback playbook restores previous stable artifact within 15 seconds.</li>
+            <li><strong>Zero-Touch Operations:</strong> Re-linking and service restart executed entirely through Ansible automation.</li>
+            <li><strong>Key Viva Takeaway 1:</strong> End-to-end continuous delivery pipeline from Git commit to verified container execution.</li>
+            <li><strong>Key Viva Takeaway 2:</strong> Guaranteed infrastructure stability with zero configuration drift.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>DevSecOps Capstone Project &bull; Amogh Kulkarni (23102C0003)</span>
+        <span>Slide 6 of 6</span>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 6;
+
+    function showSlide(num) {
+      if (num < 1) num = 1;
+      if (num > totalSlides) num = totalSlides;
+      currentSlide = num;
+
+      document.querySelectorAll('.slide').forEach((el, idx) => {
+        el.classList.toggle('active', idx + 1 === currentSlide);
+      });
+      document.getElementById('counter').innerText = `${currentSlide} / ${totalSlides}`;
+    }
+
+    function prevSlide() { showSlide(currentSlide - 1); }
+    function nextSlide() { showSlide(currentSlide + 1); }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') nextSlide();
+      if (e.key === 'ArrowLeft' || e.key === 'PageUp') prevSlide();
+    });
+  </script>
+</body>
+</html>

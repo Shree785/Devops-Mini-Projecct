@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Project Exhibition Poster - Enterprise Security Log Review System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+
+        :root {
+            --primary-navy: #0f172a;
+            --accent-blue: #0284c7;
+            --accent-teal: #0d9488;
+            --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
+            --card-bg: #ffffff;
+            --border-color: #cbd5e1;
+        }
+
+        @page {
+            size: A3 landscape;
+            margin: 8mm;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #1e293b;
+            margin: 0;
+            padding: 16px;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        .poster-container {
+            max-width: 1500px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            border: 1.5px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        /* Poster Header */
+        .poster-header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 55%, #0369a1 100%) !important;
+            color: #ffffff !important;
+            padding: 30px 40px;
+            position: relative;
+        }
+
+        .poster-title {
+            font-size: 2.3rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+            margin-bottom: 6px;
+            color: #ffffff !important;
+        }
+
+        .poster-subtitle {
+            font-size: 1.15rem;
+            color: #94a3b8 !important;
+            font-weight: 600;
+        }
+
+        .badge-pill-header {
+            background: rgba(255, 255, 255, 0.15) !important;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #38bdf8 !important;
+            padding: 5px 14px;
+            border-radius: 30px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        /* Metric Counters */
+        .stat-card {
+            background: #f8fafc !important;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.85rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #64748b;
+            letter-spacing: 0.5px;
+        }
+
+        /* Section Cards */
+        .poster-section {
+            background: #ffffff;
+            border: 1.5px solid var(--border-color);
+            border-radius: 10px;
+            padding: 18px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-size: 1.05rem;
+        }
+
+        .diagram-box {
+            background: #0f172a !important;
+            color: #e2e8f0 !important;
+            border-radius: 8px;
+            padding: 12px 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .feature-bullet {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 8px;
+            font-size: 0.84rem;
+            line-height: 1.45;
+        }
+
+        .feature-bullet i {
+            margin-top: 3px;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+
+        .tech-tag {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: #e2e8f0 !important;
+            color: #334155 !important;
+            display: inline-block;
+            margin: 2px 3px 2px 0;
+        }
+
+        /* Print formatting */
+        @media print {
+            body { padding: 0 !important; background: #fff !important; }
+            .poster-container { box-shadow: none !important; border: 1px solid #cbd5e1 !important; max-width: 100% !important; border-radius: 0; }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="poster-container">
+
+    <!-- Top Action Bar (Screen Only) -->
+    <div class="no-print bg-dark text-white py-2 px-4 d-flex justify-content-between align-items-center">
+        <span class="small"><i class="bi bi-display me-2 text-warning"></i>Project Poster Ready (Exportable to PDF and Image)</span>
+        <div>
+            <button class="btn btn-warning btn-sm fw-bold me-2" onclick="window.print()"><i class="bi bi-printer-fill me-1"></i>Print / Save as PDF</button>
+            <a href="COMPREHENSIVE_PROJECT_REPORT.html" target="_blank" class="btn btn-outline-light btn-sm"><i class="bi bi-file-earmark-text me-1"></i>View 14-Task Report</a>
+        </div>
+    </div>
+
+    <!-- Poster Header Banner -->
+    <div class="poster-header">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <div class="badge-pill-header mb-2"><i class="bi bi-shield-check me-1"></i>END-TO-END DEVSECOPS PIPELINE & PROVISIONING</div>
+                <h1 class="poster-title">Ansible-Provisioned Security Log Review System</h1>
+                <div class="poster-subtitle">Automated Continuous Testing Quality Gates, Hardened Containerization, and Idempotent Infrastructure</div>
+            </div>
+            <div class="text-end d-none d-md-block">
+                <span class="badge bg-success px-3 py-2 fs-6 mb-2 d-inline-block"><i class="bi bi-check-circle-fill me-1"></i>14 Tasks Complete (100%)</span>
+                <div class="text-white-50 small">GitFlow Releases: <code>v1.0.0</code> & <code>v1.1.0</code></div>
+            </div>
+        </div>
+
+        <!-- 4 Key Hero Metric Counters -->
+        <div class="row g-3 mt-3">
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="stat-number text-primary">14 / 14</div>
+                    <div class="stat-label">DevOps Milestones</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="stat-number text-success">166 MB</div>
+                    <div class="stat-label">Alpine Docker Image</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="stat-number text-dark">changed=0</div>
+                    <div class="stat-label">Ansible Idempotency</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="stat-number text-danger">&lt; 15s</div>
+                    <div class="stat-label">Disaster Rollback (RTO)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Poster Body: 3-Column Layout -->
+    <div class="p-4">
+        <div class="row g-3">
+
+            <!-- Column 1: Application Architecture & Git Strategy -->
+            <div class="col-lg-4 d-flex flex-column gap-3">
+                
+                <!-- Box 1: Architecture -->
+                <div class="poster-section">
+                    <div class="section-header text-primary">
+                        <div class="section-icon bg-primary bg-opacity-10 text-primary"><i class="bi bi-cpu-fill"></i></div>
+                        1. System Architecture & Domain
+                    </div>
+                    <p class="small text-muted mb-2">
+                        Production-grade incident response platform for Security Operations Centers (SOC). Ingests security logs, classifies threat severity, and coordinates remediation triage.
+                    </p>
+                    <div class="feature-bullet">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <div><strong>Spring Boot 3 + Java 17:</strong> Modular MVC architecture with embedded Tomcat 10 for zero-dependency execution.</div>
+                    </div>
+                    <div class="feature-bullet">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <div><strong>In-Memory H2 Database:</strong> Zero-drift persistence with Spring Data JPA and HikariCP connection pooling.</div>
+                    </div>
+                    <div class="feature-bullet">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <div><strong>Actuator Health Probes:</strong> Native monitoring via <code>/actuator/health</code> for automated container checks.</div>
+                    </div>
+                    <div class="mt-auto pt-2">
+                        <span class="tech-tag">Java 17</span>
+                        <span class="tech-tag">Spring Boot 3</span>
+                        <span class="tech-tag">Tomcat 10</span>
+                        <span class="tech-tag">H2 Database</span>
+                        <span class="tech-tag">Thymeleaf</span>
+                    </div>
+                </div>
+
+                <!-- Box 2: GitFlow Branching Model -->
+                <div class="poster-section">
+                    <div class="section-header text-dark">
+                        <div class="section-icon bg-dark bg-opacity-10 text-dark"><i class="bi bi-git"></i></div>
+                        2. GitFlow Branching & Traceability
+                    </div>
+                    <p class="small text-muted mb-2">
+                        Strict branch isolation with semantic version tagging and end-to-end traceability to Jenkins build commits.
+                    </p>
+                    <div class="diagram-box mb-2">
+main (Tagged v1.0.0, v1.1.0)
+ ▲
+ └── dev (Integration Branch)
+      ▲
+      ├── feature/docker-containerization
+      ├── feature/continuous-testing-pipeline
+      └── feature/ansible-configuration
+                    </div>
+                    <div class="small text-muted">
+                        • <strong>Tag v1.0.0:</strong> Functional MVP release baseline.<br>
+                        • <strong>Tag v1.1.0:</strong> Full production release with Docker CD & Ansible.
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Column 2: CI/CD Pipeline & Continuous Testing Gate -->
+            <div class="col-lg-4 d-flex flex-column gap-3">
+                
+                <!-- Box 3: Declarative CI/CD Pipeline -->
+                <div class="poster-section">
+                    <div class="section-header text-info">
+                        <div class="section-icon bg-info bg-opacity-10 text-info"><i class="bi bi-gear-wide-connected"></i></div>
+                        3. Jenkins CI/CD Pipeline as Code
+                    </div>
+                    <p class="small text-muted mb-2">
+                        Defined entirely in <code>Jenkinsfile</code> across 6 automated declarative stages with automated artifact archiving.
+                    </p>
+                    
+                    <div class="d-flex flex-column gap-2 mb-2">
+                        <div class="p-2 border rounded small bg-light d-flex justify-content-between">
+                            <span>1. <strong>Checkout SCM</strong> (Git Branch)</span>
+                            <span class="badge bg-success">PASS</span>
+                        </div>
+                        <div class="p-2 border rounded small bg-light d-flex justify-content-between">
+                            <span>2. <strong>Build & Compile</strong> (Maven 3.9)</span>
+                            <span class="badge bg-success">PASS</span>
+                        </div>
+                        <div class="p-2 border rounded small bg-light d-flex justify-content-between">
+                            <span>3. <strong>Unit & Service Tests</strong> (15 Tests)</span>
+                            <span class="badge bg-success">PASS</span>
+                        </div>
+                        <div class="p-2 border rounded small bg-light d-flex justify-content-between">
+                            <span>4. <strong>Continuous Testing Gate</strong> (Selenium)</span>
+                            <span class="badge bg-success">PASS</span>
+                        </div>
+                        <div class="p-2 border rounded small bg-light d-flex justify-content-between">
+                            <span>5. <strong>Package Artifact</strong> (52 MB JAR)</span>
+                            <span class="badge bg-success">PASS</span>
+                        </div>
+                        <div class="p-2 border rounded small bg-light d-flex justify-content-between">
+                            <span>6. <strong>Docker Continuous Deploy</strong> (Port 8080)</span>
+                            <span class="badge bg-success">PASS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Box 4: Continuous Testing Quality Gate -->
+                <div class="poster-section">
+                    <div class="section-header text-danger">
+                        <div class="section-icon bg-danger bg-opacity-10 text-danger"><i class="bi bi-shield-x"></i></div>
+                        4. Continuous Testing Quality Gate
+                    </div>
+                    <p class="small text-muted mb-2">
+                        Automated shift-left quality gate in Headless Chrome validating 5 complete end-to-end user journeys before deployment.
+                    </p>
+                    <div class="feature-bullet">
+                        <i class="bi bi-bug-fill text-danger"></i>
+                        <div><strong>Defect Injection Verification:</strong> Injected deliberate defect into UI; Jenkins caught bug, <strong>halted pipeline</strong>, and archived failure screenshots.</div>
+                    </div>
+                    <div class="feature-bullet">
+                        <i class="bi bi-lightning-charge-fill text-warning"></i>
+                        <div><strong>Green Pass:</strong> Defect resolved, re-executed, and achieved 100% green build in <strong>27.13 seconds</strong>.</div>
+                    </div>
+                    <div class="mt-auto">
+                        <span class="tech-tag">Selenium 4</span>
+                        <span class="tech-tag">Headless Chrome</span>
+                        <span class="tech-tag">JUnit 5</span>
+                        <span class="tech-tag">Quality Gate</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Column 3: Docker Hardening, Ansible & Results -->
+            <div class="col-lg-4 d-flex flex-column gap-3">
+                
+                <!-- Box 5: Docker Containerization -->
+                <div class="poster-section">
+                    <div class="section-header text-success">
+                        <div class="section-icon bg-success bg-opacity-10 text-success"><i class="bi bi-box-seam-fill"></i></div>
+                        5. Hardened Docker Containerization
+                    </div>
+                    <p class="small text-muted mb-2">
+                        Production multi-stage build eliminating vulnerabilities and optimizing image footprint down to <strong>166 MB</strong>.
+                    </p>
+                    <div class="feature-bullet">
+                        <i class="bi bi-shield-lock-fill text-success"></i>
+                        <div><strong>Non-Root User (UID 1001):</strong> Dedicated least-privilege service account <code>appuser</code> prevents host breakout.</div>
+                    </div>
+                    <div class="feature-bullet">
+                        <i class="bi bi-heart-pulse-fill text-danger"></i>
+                        <div><strong>Native Healthcheck:</strong> Probes <code>/actuator/health</code> every 30s to verify container readiness.</div>
+                    </div>
+                    <div class="feature-bullet">
+                        <i class="bi bi-arrow-repeat text-primary"></i>
+                        <div><strong>Continuous Deployment:</strong> Zero-downtime rolling container replacement via <code>deploy-docker.ps1</code>.</div>
+                    </div>
+                </div>
+
+                <!-- Box 6: Ansible Idempotency & Rollback -->
+                <div class="poster-section">
+                    <div class="section-header text-warning">
+                        <div class="section-icon bg-warning bg-opacity-10 text-dark"><i class="bi bi-terminal-fill"></i></div>
+                        6. Ansible Provisioning & Rollback
+                    </div>
+                    <p class="small text-muted mb-2">
+                        Infrastructure-as-Code utilizing modular roles (<code>security_log_app</code>) and dynamic Jinja2 configuration templates.
+                    </p>
+                    <div class="p-2 border rounded small bg-light mb-2">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Initial Provisioning:</span>
+                            <span class="badge bg-secondary">ok=12 changed=4</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <strong>Idempotency Re-run:</strong>
+                            <span class="badge bg-success">ok=10 changed=0</span>
+                        </div>
+                    </div>
+                    <div class="feature-bullet">
+                        <i class="bi bi-arrow-counterclockwise text-danger"></i>
+                        <div><strong>Disaster Recovery Rollback:</strong> Automated rollback playbook (<code>rollback.yml</code>) restores stable state with <strong>RTO &lt; 15 seconds</strong>.</div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Bottom Audit Deliverables Banner -->
+        <div class="mt-3 p-3 bg-light rounded border d-flex flex-wrap justify-content-between align-items-center">
+            <div class="small">
+                <strong><i class="bi bi-folder-check text-success me-1"></i>Deliverables:</strong> 
+                Folders <code>Task-01/</code> through <code>Task-14/</code> with complete Markdown evidence, screenshots, and logs.
+            </div>
+            <div class="small">
+                <strong><i class="bi bi-play-circle-fill text-primary me-1"></i>1-Click Execution:</strong> 
+                <code>START_DEMO.bat</code> (Ports 8080 & 8081) | <code>SHOW_GIT.bat</code> (Branch Graph)
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
